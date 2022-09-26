@@ -32,6 +32,48 @@ router.get("/productos", async (req, res) => {
     console.log(error);
   }
 });
+
+router.delete("/productos/:id", async(req, res) =>{
+  try {
+    const {id} = req.params;
+    console.log(id)
+    let sql = 'Delete from producto where id_producto = :id'
+    let result = await DB.Open(sql, [id], true);
+    console.log('Eliminado', result)
+    res.json(result)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post("/productos", async(req, res) =>{
+  try {
+    const {nombre, precio, peso, cantidad} = req.body
+    let sql = 'Insert into PRODUCTO (ID_PRODUCTO,NOMBRE,PRECIO,PESO,CANTIDAD) values (id_producto.nextval,:nombre,:precio,:peso,:cantidad)'
+    await DB.Open(sql, [nombre, precio, peso, cantidad], true)
+    res.json({
+      message: "Todo bien todo correcto y yo me que alegro",
+    });
+  } catch (error) {
+    console.log(error)
+  }
+ 
+
+})
+
+router.put("/productos/:id", async(req,res)=>{
+  try {
+    const {id} = req.params;
+    console.log(id)
+    const {nombre, precio, peso, cantidad} = req.body
+    let sql = 'Update producto set nombre = :nombre, precio = :precio, peso =:peso, cantidad =:cantidad where id_producto =:id'
+    await DB.Open(sql, [nombre, precio, peso, cantidad, id], true)
+    console.log(`producto actualizado`)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.post("/register", async (req, res) => {
   //Se recibe la informaciond del frontend
   const {
