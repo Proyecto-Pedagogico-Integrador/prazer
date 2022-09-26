@@ -1,6 +1,7 @@
 // Definicion de variables
 const url = 'http://localhost:4000/productos'
 const contenedor = document.querySelector('tbody')
+console.log("contenedor", contenedor)
 let resultados = ''
 
 const modalArticulo = new bootstrap.Modal(document.getElementById('modalArticulo'))
@@ -23,21 +24,19 @@ btnCrear.addEventListener('click', ()=>{
 
 //función mostrar
 const mostrar = (productoBD) =>{
-    console.log('entra');
     productoBD.forEach(producto =>{
-        console.log('entra 2');
-        console.log(productoBD);
         resultados += `<tr> 
-        <td>${productoBD.ID_PRODUCTO}</td>
-        <td>${productoBD.NOMBRE}</td>
-        <td>${productoBD.PRECIO}</td>
-        <td>${productoBD.PESO}</td>
-        <td>${productoBD.CANTIDAD}</td>
+        <td>${producto.ID_PRODUCTO}</td>
+        <td>${producto.NOMBRE}</td>
+        <td>${producto.PRECIO}</td>
+        <td>${producto.PESO}</td>
+        <td>${producto.CANTIDAD}</td>
         <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnEliminar btn btn-danger">Eliminar</a>
         </tr>`
-        console.log('entra 3');
     })
+    console.log("resultados", resultados)
     contenedor.innerHTML = resultados
+    console.log("contenedor", contenedor)
 }
 
 // Procedimiento Mostrar
