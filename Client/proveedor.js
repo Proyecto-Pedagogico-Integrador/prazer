@@ -1,36 +1,28 @@
 // Definicion de variables
-const url = 'http://localhost:4000/productos'
+const url = 'http://localhost:4000/proveedores'
 const contenedor = document.querySelector('tbody')
 let resultados = ''
 
-const modalArticulo = new bootstrap.Modal(document.getElementById('modalArticulo'))
-const formArticulo = document.querySelector('form')
+const modalProveedor = new bootstrap.Modal(document.getElementById('modalProveedor'))
+const formProveedor = document.querySelector('form')
 const nombre = document.getElementById('nombre')
-const precio = document.getElementById('precio')
-const peso = document.getElementById('peso')
-const cantidad = document.getElementById('cantidad')
+const direccion = document.getElementById('direccion')
 let opcion = ''
 
 btnCrear.addEventListener('click', () => {
     nombre.value = ''
-    precio.value = ''
-    peso.value = ''
-    cantidad.value = ''
-    modalArticulo.show()
+    direccion.value = ''
+    modalProveedor.show()
     opcion = 'crear'
-
 })
 
-
 //función mostrar
-const mostrar = (productoBD) => {
-    productoBD.forEach(producto => {
-        resultados += `<tr> 
-        <td>${producto.ID_PRODUCTO}</td>
-        <td>${producto.NOMBRE}</td>
-        <td>${producto.PRECIO}</td>
-        <td>${producto.PESO}</td>
-        <td>${producto.CANTIDAD}</td>
+const mostrar = (proveedorBD) => {
+    proveedorBD.forEach(proveedor => {
+        resultados += `<tr>
+        <td>${proveedor.ID_PROVEEDOR}</td>
+        <td>${proveedor.NOMBRE}</td>
+        <td>${proveedor.DIRECCION}</td>
         <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a></td>
         </tr>`
     })
@@ -42,7 +34,6 @@ fetch(url)
     .then(response => response.json())
     .then(data => mostrar(data))
     .catch(error => console.log(error))
-
 
 const on = (element, event, selector, handler) => {
     element.addEventListener(event, e => {
@@ -56,11 +47,11 @@ on(document, 'click', '.btnBorrar', e => {
     const fila = e.target.parentNode.parentNode
     const id = fila.firstElementChild.innerHTML
     const nombre = fila.children[1].innerHTML
-    console.log(`Id producto ${id} Nombre ${nombre}`)
+    console.log(`Id proveedor ${id} Nombre ${nombre}`)
     {
         Swal.fire({
             html:
-                `<b> ¿Está seguro de eliminar el producto ${nombre}?</b>` +
+                `<b> ¿Está seguro de eliminar el proveedor ${nombre}?</b>` +
                 '<br/> <br/> Recuerde que al confirmar, este registro se perderá',
             width: 400,
             heightAuto: true,
@@ -86,7 +77,7 @@ on(document, 'click', '.btnBorrar', e => {
                     .then(res => res.json())
                 Swal.fire({
                     html:
-                        '<b>El producto fue eliminado!</b>',
+                        '<b>El proveedor fue eliminado!</b>',
                     icon: 'success',
                     width: 400,
                     heightAuto: true,
@@ -118,20 +109,16 @@ on(document, 'click', '.btnEditar', e => {
     const fila = e.target.parentNode.parentNode
     idForm = fila.children[0].innerHTML
     const nombreForm = fila.children[1].innerHTML
-    const precioForm = fila.children[2].innerHTML
-    const pesoForm = fila.children[3].innerHTML
-    const cantidadForm = fila.children[4].innerHTML
-    console.log(`Id ${idForm} nombre ${nombreForm} precio ${precioForm} peso ${pesoForm} cantidad ${cantidadForm}`)
+    const direccionForm = fila.children[2].innerHTML
+    console.log(`Id ${idForm} nombre ${nombreForm} direccion ${direccionForm}`)
     nombre.value = nombreForm
-    precio.value = precioForm
-    peso.value = pesoForm
-    cantidad.value = cantidadForm
-    modalArticulo.show()
+    direccion.value = direccionForm
+    modalProveedor.show()
     opcion = 'editar'
 })
 
 // Procedimiento para Crear y Editar
-formArticulo.addEventListener('submit', (e) => {
+formProveedor.addEventListener('submit', (e) => {
     e.preventDefault();
     if (opcion == 'crear') {
         console.log('Opcion Crear')
@@ -143,23 +130,21 @@ formArticulo.addEventListener('submit', (e) => {
                 },
                 body: JSON.stringify({
                     nombre: nombre.value,
-                    precio: precio.value,
-                    peso: peso.value,
-                    cantidad: cantidad.value
+                    direccion: direccion.value
                 })
             })
                 .then(response => response.json())
                 .then(data => {
-                    const nuevoProducto = []
-                    nuevoProducto.push(data)
-                    mostrar(nuevoProducto)
-                    modalArticulo.hide()
+                    const nuevoProveedor = []
+                    nuevoProveedor.push(data)
+                    mostrar(nuevoProveedor)
+                    modalProveedor.hide()
 
                 })
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Producto Creado Exitosamente',
+                title: 'Proveedor Creado Exitosamente',
                 showConfirmButton: false,
                 timer: 2000,
             })
@@ -179,17 +164,15 @@ formArticulo.addEventListener('submit', (e) => {
                 },
                 body: JSON.stringify({
                     nombre: nombre.value,
-                    precio: precio.value,
-                    peso: peso.value,
-                    cantidad: cantidad.value
+                    direccion: direccion.value
                 })
             })
                 .then(response => response.json())
-            modalArticulo.hide()
+            modalProveedor.hide()
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Producto Actualizado Exitosamente',
+                title: 'Proveedor Actualizado Exitosamente',
                 showConfirmButton: false,
                 timer: 2000,
             })

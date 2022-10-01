@@ -22,14 +22,12 @@
 <body>
     <div class="container mt-4 shadow-lg p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
         <button id="btnCrear" type="button" class="btn btn-success" data-bs-toggle="modal">Crear</button>
-        <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
+        <table id="tablaProveedores" class="table mt-2 table-bordered table-striped">
             <thead class="bg-dark text-white">
                 <tr class="text-center">
                     <th>ID</th>
                     <th>NOMBRE</th>
-                    <th>PRECIO</th>
-                    <th>PESO</th>
-                    <th>CANTIDAD</th>
+                    <th>DIRECCIÓN</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -41,11 +39,11 @@
 
    
 
-<div id="modalArticulo" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="modalProveedor" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Producto</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Proveedor</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -55,18 +53,9 @@
             <input id="nombre" type="text" class="form-control" autofocus required>
           </div>
           <div class="mb-2">
-            <label for="precio" class="col-form-label">Precio</label>
-            <input id="precio" type="number" class="form-control" required></input>
+            <label for="direccion" class="col-form-label">Direccion</label>
+            <input id="direccion" type="text" class="form-control" required></input>
           </div>
-          <div class="mb-2">
-            <label for="peso" class="col-form-label">Peso</label>
-            <input id="peso" type="number" class="form-control" required></input>
-          </div>
-          <div class="mb-2">
-            <label for="cantidad" class="col-form-label">Cantidad</label>
-            <input id="cantidad" type="number" class="form-control" required></input>
-          </div>
-        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -87,7 +76,7 @@
     <!-- JavaScript -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="code.js"></script>
+    <script src="proveedor.js"></script>
 </body>
 
 </html>
