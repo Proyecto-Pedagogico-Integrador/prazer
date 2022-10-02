@@ -290,3 +290,92 @@ router.post("/register", async (req, res) => {
   }
 });
 module.exports = router;
+
+
+
+
+
+//Servicios para materia prima
+
+router.get("/materiaPrima", async (req, res) => {
+  try {
+    let sql = `SELECT * FROM MATERIA_PRIMA`;
+    let mPrimaBD = [];
+    let result = await DB.Open(sql, [], false);
+    result.rows.map((mPrima) => {
+      let userSchema = {
+        ID_MATERIA_PRIMA: mPrima[0],
+        NOMBRE: mPrima[1],
+        COSTO: mPrima[2],
+        CANTIDAD: mPrima[3],
+        ID_PROVEEDOR: mPrima[4]
+      };
+      mPrimaBD.push(userSchema);
+    });
+    console.log(mPrimaBD);
+    res.json(mPrimaBD);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.delete("/materiaPrima/:id", async(req, res) =>{
+  try {
+    const {id} = req.params;
+    console.log(id)
+    let sql = 'Delete from MATERIA_PRIMA where ID_MATERIA_PRIMA = :id'
+    let result = await DB.Open(sql, [id], true);
+    console.log('Eliminado', result)
+    res.json(result)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post("/materiaPrima", async(req, res) =>{
+  try {
+    const {nombre, costo, cantidad, proveedor} = req.body
+    let sql = 'Insert into MATERIA_PRIMA (ID_MATERIA_PRIMA,NOMBRE,COSTO,CANTIDAD,ID_PROVEEDOR) values (id_producto.nextval,:nombre,:costo,:cantidad,:proveedor)'
+    await DB.Open(sql, [nombre, costo, cantidad, proveedor], true)
+    res.json({
+      message: "Todo bien todo correcto y yo me que alegro",
+    });
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.put("/materiaPrima/:id", async(req,res)=>{
+  try {
+    const {id} = req.params;
+    console.log(id)
+    const {nombre, costo, cantidad, proveedor} = req.body
+    let sql = 'Update MATERIA_PRIMA set NOMBRE = :nombre, COSTO = :costo, CANTIDAD =:cantidad, ID_PROVEEDOR =:proveedor where ID_MATERIA_PRIMA =:id'
+    await DB.Open(sql, [nombre, costo, cantidad, proveedor, id], true)
+    console.log(`Materia prima actualizado`)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+//Servicio para proveedores
+
+router.get("/proveedor", async (req, res) => {
+  try {
+    let sql = `SELECT * FROM PROVEEDOR`;
+    let proveedorBD = [];
+    let result = await DB.Open(sql, [], false);
+    result.rows.map((proveedor) => {
+      let userSchema = {
+        ID_PROVEEDOR: proveedor[0],
+        NOMBRE: proveedor[1],
+        DIRECCION: proveedor[2],
+      };
+      proveedorBD.push(userSchema);
+    });
+    console.log(proveedorBD);
+    res.json(proveedorBD);
+  } catch (error) {
+    console.log(error);
+  }
+});
