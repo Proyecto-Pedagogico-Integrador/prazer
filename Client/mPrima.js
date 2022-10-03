@@ -1,37 +1,38 @@
 // Definicion de variables
-const url = 'http://localhost:4000/productos'
-const contenedor = document.querySelector('tbody')
+const url = "http://localhost:4000/materiaPrima"
+const url2 = "http://localhost:4000/proveedor"
+const contenedor = document.querySelector("tbody")
+const seleccion = document.querySelector("select")
 let resultados = ''
+let resultados2 = ''
 
-const modalArticulo = new bootstrap.Modal(document.getElementById('modalArticulo'))
-const formArticulo = document.querySelector('form')
+const modalMPrima = new bootstrap.Modal(document.getElementById('modalMPrima'))
+const formMPrima = document.querySelector('form')
 const nombre = document.getElementById('nombre')
-const precio = document.getElementById('precio')
-const peso = document.getElementById('peso')
+const costo = document.getElementById('costo')
 const cantidad = document.getElementById('cantidad')
+const proveedor = document.getElementById('proveedor')
 let opcion = ''
 
 btnCrear.addEventListener('click', () => {
     nombre.value = ''
-    precio.value = ''
-    peso.value = ''
+    costo.value = ''
     cantidad.value = ''
-    modalArticulo.show()
+    proveedor.value = ''
+    modalMPrima.show()
     opcion = 'crear'
-
 })
 
-
 //función mostrar
-const mostrar = (productoBD) => {
-    productoBD.forEach(producto => {
+const mostrar = (mPrimaBD) => {
+    mPrimaBD.forEach((mPrima) => {
         resultados += `<tr> 
-        <td>${producto.ID_PRODUCTO}</td>
-        <td>${producto.NOMBRE}</td>
-        <td>${producto.PRECIO}</td>
-        <td>${producto.PESO}</td>
-        <td>${producto.CANTIDAD}</td>
-        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a></td>
+        <td>${mPrima.ID_MATERIA_PRIMA}</td>
+        <td>${mPrima.NOMBRE}</td>
+        <td>${mPrima.COSTO}</td>
+        <td>${mPrima.CANTIDAD}</td>
+        <td>${mPrima.ID_PROVEEDOR}</td>
+        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
         </tr>`
     })
     contenedor.innerHTML = resultados
@@ -39,10 +40,9 @@ const mostrar = (productoBD) => {
 
 // Procedimiento Mostrar
 fetch(url)
-    .then(response => response.json())
-    .then(data => mostrar(data))
-    .catch(error => console.log(error))
-
+    .then((response) => response.json())
+    .then((data) => mostrar(data))
+    .catch((error) => console.log(error))
 
 const on = (element, event, selector, handler) => {
     element.addEventListener(event, e => {
@@ -52,15 +52,17 @@ const on = (element, event, selector, handler) => {
     })
 }
 
+//Función borrar
+
 on(document, 'click', '.btnBorrar', e => {
     const fila = e.target.parentNode.parentNode
     const id = fila.firstElementChild.innerHTML
     const nombre = fila.children[1].innerHTML
-    console.log(`Id producto ${id} Nombre ${nombre}`)
+    console.log(`Id matria prima ${id} Nombre ${nombre}`)
     {
         Swal.fire({
             html:
-                `<b> ¿Está seguro de eliminar el producto ${nombre}?</b>` +
+                `<b> ¿Está seguro de eliminar la materia prima ${nombre}?</b>` +
                 '<br/> <br/> Recuerde que al confirmar, este registro se perderá',
             width: 400,
             heightAuto: true,
@@ -118,20 +120,20 @@ on(document, 'click', '.btnEditar', e => {
     const fila = e.target.parentNode.parentNode
     idForm = fila.children[0].innerHTML
     const nombreForm = fila.children[1].innerHTML
-    const precioForm = fila.children[2].innerHTML
-    const pesoForm = fila.children[3].innerHTML
-    const cantidadForm = fila.children[4].innerHTML
-    console.log(`Id ${idForm} nombre ${nombreForm} precio ${precioForm} peso ${pesoForm} cantidad ${cantidadForm}`)
+    const costoForm = fila.children[2].innerHTML
+    const cantidadForm = fila.children[3].innerHTML
+    const proveedorForm = fila.children[4].innerHTML
+    console.log(`Id ${idForm} nombre ${nombreForm} costo ${costoForm} cantidad ${cantidadForm} proveedor ${proveedorForm}`)
     nombre.value = nombreForm
-    precio.value = precioForm
-    peso.value = pesoForm
+    costo.value = costoForm
     cantidad.value = cantidadForm
-    modalArticulo.show()
+    proveedor.value = proveedorForm
+    modalMPrima.show()
     opcion = 'editar'
 })
 
 // Procedimiento para Crear y Editar
-formArticulo.addEventListener('submit', (e) => {
+formMPrima.addEventListener('submit', (e) => {
     e.preventDefault();
     if (opcion == 'crear') {
         console.log('Opcion Crear')
@@ -143,23 +145,23 @@ formArticulo.addEventListener('submit', (e) => {
                 },
                 body: JSON.stringify({
                     nombre: nombre.value,
-                    precio: precio.value,
-                    peso: peso.value,
-                    cantidad: cantidad.value
+                    costo: costo.value,
+                    cantidad: cantidad.value,
+                    proveedor: proveedor.value
                 })
             })
                 .then(response => response.json())
                 .then(data => {
-                    const nuevoProducto = []
-                    nuevoProducto.push(data)
-                    mostrar(nuevoProducto)
-                    modalArticulo.hide()
+                    const nuevaMPrima = []
+                    nuevaMPrima.push(data)
+                    mostrar(nuevaMPrima)
+                    modalMPrima.hide()
 
                 })
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Producto Creado Exitosamente',
+                title: 'Materia Prima Creada Exitosamente',
                 showConfirmButton: false,
                 timer: 2000,
             })
@@ -179,17 +181,17 @@ formArticulo.addEventListener('submit', (e) => {
                 },
                 body: JSON.stringify({
                     nombre: nombre.value,
-                    precio: precio.value,
-                    peso: peso.value,
-                    cantidad: cantidad.value
+                    costo: costo.value,
+                    cantidad: cantidad.value,
+                    proveedor: proveedor.value
                 })
             })
                 .then(response => response.json())
-            modalArticulo.hide()
+            modalMPrima.hide()
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Producto Actualizado Exitosamente',
+                title: 'Materia Prima Actualizada Exitosamente',
                 showConfirmButton: false,
                 timer: 2000,
             })
@@ -201,3 +203,28 @@ formArticulo.addEventListener('submit', (e) => {
     }
    
 })
+
+//función mostrar proveedores
+const mostrarP = (proveedorBD) => {
+    proveedorBD.forEach((proveedores) => {
+        resultados2 += 
+        
+        `<option value="${proveedores.ID_PROVEEDOR}">${proveedores.NOMBRE}</option>`
+        
+    })
+    seleccion.innerHTML = resultados2
+}
+
+// Procedimiento Mostrar
+fetch(url2)
+    .then((response) => response.json())
+    .then((data) => mostrarP(data))
+    .catch((error) => console.log(error))
+
+const on2 = (element, event, selector, handler) => {
+    element.addEventListener(event, e => {
+        if (e.target.closest(selector)) {
+            handler(e)
+        }
+    })
+}
