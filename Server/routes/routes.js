@@ -358,24 +358,3 @@ router.put("/materiaPrima/:id", async(req,res)=>{
   }
 })
 
-//Servicio para proveedores
-
-router.get("/proveedor", async (req, res) => {
-  try {
-    let sql = `SELECT * FROM PROVEEDOR`;
-    let proveedorBD = [];
-    let result = await DB.Open(sql, [], false);
-    result.rows.map((proveedor) => {
-      let userSchema = {
-        ID_PROVEEDOR: proveedor[0],
-        NOMBRE: proveedor[1],
-        DIRECCION: proveedor[2],
-      };
-      proveedorBD.push(userSchema);
-    });
-    console.log(proveedorBD);
-    res.json(proveedorBD);
-  } catch (error) {
-    console.log(error);
-  }
-});

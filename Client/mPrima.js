@@ -1,6 +1,6 @@
 // Definicion de variables
 const url = "http://localhost:4000/materiaPrima"
-const url2 = "http://localhost:4000/proveedor"
+const url2 = "http://localhost:4000/proveedores"
 const contenedor = document.querySelector("tbody")
 const seleccion = document.querySelector("select")
 let resultados = ''
