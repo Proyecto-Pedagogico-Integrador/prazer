@@ -31,7 +31,7 @@ const mostrar = (mPrimaBD) => {
         <td>${mPrima.NOMBRE}</td>
         <td>${mPrima.COSTO}</td>
         <td>${mPrima.CANTIDAD}</td>
-        <td>${mPrima.ID_PROVEEDOR}</td>
+        <td>${mPrima.NOMBRE_PROVEEDOR}</td>
         <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
         </tr>`
     })

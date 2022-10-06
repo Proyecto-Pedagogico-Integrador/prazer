@@ -164,6 +164,46 @@ router.post("/empleados", async (req, res) => {
   }
 })
 
+
+router.post("/login", async(req,res) =>{
+  try {
+    const {username, password} = req.body;
+    console.log(username, password)
+    let sql = `select * from empleado WHERE cedula = ${username}`;
+    let result = await DB.Open(sql, [], false);
+    Empleados = [];
+    result.rows.map((empleado) => {
+      let userSchema = {
+        ID_EMPLEADO: empleado[0],
+        CEDULA: empleado[1],
+        PRIMER_NOMBRE: empleado[2],
+        SEGUNDO_NOMBRE: empleado[3],
+        PRIMER_APELLIDO: empleado[4],
+        SEGUNDO_APELLIDO: empleado[5],
+        CORREO: empleado[6],
+        CONTRASEÑA: empleado[7],
+        TELEFONO: empleado[8],
+        FECHA_DE_NACIMIENTO: empleado[9],
+        SALARIO: empleado[10],
+        EPS: empleado[11],
+        GENERO: empleado[12],
+        TELEFONO_EMERGENCIA: empleado[13],
+        ID_RH: empleado[14],
+        ID_TIPO_EMPLEADO: empleado[15]
+      };
+      Empleados.push(userSchema);
+    });
+    //Se compara la contraseña enviada del frontend y la existente en la bd
+    const match = await bcrypt.compare(password, Empleados[0].CONTRASEÑA);
+    if (!match) return res.status(400).json({ msg: "Contraseña Erronea" });
+    res.json(Empleados);
+  } catch (error) {
+    res.status(404).json({ msg: "Empleado no encontrado" });
+  }
+})
+
+
+
 router.put("/empleados/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -299,7 +339,7 @@ module.exports = router;
 
 router.get("/materiaPrima", async (req, res) => {
   try {
-    let sql = `SELECT * FROM MATERIA_PRIMA`;
+    let sql = `SELECT MP.ID_MATERIA_PRIMA, MP.NOMBRE, MP.COSTO, MP.CANTIDAD, P.NOMBRE AS NOMBRE_PROVEEDOR FROM MATERIA_PRIMA MP INNER JOIN PROVEEDOR P ON MP.ID_PROVEEDOR = P.ID_PROVEEDOR`;
     let mPrimaBD = [];
     let result = await DB.Open(sql, [], false);
     result.rows.map((mPrima) => {
@@ -308,7 +348,7 @@ router.get("/materiaPrima", async (req, res) => {
         NOMBRE: mPrima[1],
         COSTO: mPrima[2],
         CANTIDAD: mPrima[3],
-        ID_PROVEEDOR: mPrima[4]
+        NOMBRE_PROVEEDOR: mPrima[4]
       };
       mPrimaBD.push(userSchema);
     });
@@ -357,4 +397,6 @@ router.put("/materiaPrima/:id", async(req,res)=>{
     console.log(error)
   }
 })
+
+//Servicio para proveedores
 
