@@ -17,9 +17,20 @@
 <!--  Sweet Alert -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <title>Reportes Regulatorios Prazer</title>
+    <link rel="stylesheet" href="./menu.css" type="text/css">
+    <link rel="stylesheet" href="./index.css" type="text/css">
 </head>
 
 <body>
+  <div class="menu-container">
+    <img class="img" src="./Logo.png">
+    <ul>
+        <li><a href="./index.html"><div class="option-container"><p>Productos</p></div></a></li>
+        <li><a href="./empleado.html"><div class="option-container"><p>Empleados</p></div></a></li>
+        <li><a href="./mPrima.html"><div class="option-container"><p>Materia Prima</p></div></a></li>
+        <li><a href="./proveedor.html"><div class="option-container"><p>Proveedores</p></div></a></li>
+    </ul>
+    </div>
     <div class="container mt-4 shadow-lg p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
         <button id="btnCrear" type="button" class="btn btn-success" data-bs-toggle="modal">Crear</button>
         <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
@@ -70,7 +81,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="submit" class="btn btnGuardar">Guardar</button>
       </div>
     </form>
     </div>

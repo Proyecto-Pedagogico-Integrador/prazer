@@ -23,7 +23,7 @@ const mostrar = (proveedorBD) => {
         <td>${proveedor.ID_PROVEEDOR}</td>
         <td>${proveedor.NOMBRE}</td>
         <td>${proveedor.DIRECCION}</td>
-        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a></td>
+        <td class="text-center"><a class="btnEditar btn">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a></td>
         </tr>`
     })
     contenedor.innerHTML = resultados

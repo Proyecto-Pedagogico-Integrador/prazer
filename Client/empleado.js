@@ -96,7 +96,7 @@ const mostrarEmpleado = (empleadoBD) =>{
         <td>${empleado.TELEFONO_EMERGENCIA}</td>
         <td>${empleado.NOMBRE_RH}</td>
         <td>${empleado.NOMBRE_TIPO_EMPLEADO}</td>
-        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
+        <td class="text-center"><a class="btnEditar btn">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
         </tr>`
     })
     contenedor.innerHTML = resultadoEmpleado

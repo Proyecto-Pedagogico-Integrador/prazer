@@ -32,7 +32,7 @@ const mostrar = (mPrimaBD) => {
         <td>${mPrima.COSTO}</td>
         <td>${mPrima.CANTIDAD}</td>
         <td>${mPrima.NOMBRE_PROVEEDOR}</td>
-        <td class="text-center"><a class="btnEditar btn btn-primary">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
+        <td class="text-center"><a class="btnEditar btn">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a>
         </tr>`
     })
     contenedor.innerHTML = resultados
