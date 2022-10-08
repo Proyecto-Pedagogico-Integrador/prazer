@@ -26,6 +26,30 @@ formLogin.addEventListener('submit', (e) => {
                     password: password.value
                 })
             })
-                .then(response => response.json())
+            .then(response =>response.json())
+            
+                .then(data =>{
+                    if(data.msg === "Empleado Aceptado"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: `${data.msg}`,
+                            showConfirmButton: false,
+                            timer: 1800
+                          })
+                          .then(() => {
+                            //Redirigimos la pagina cuando inicie sesion
+                           window.location.href="http://127.0.0.1:3000/Client/index.html"
+                           });
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: `${data.msg}`,
+                            showConfirmButton: false,
+                            timer: 2000
+                          });
+                    }
+                   
+                })
+               /*  ; */
         }
 })

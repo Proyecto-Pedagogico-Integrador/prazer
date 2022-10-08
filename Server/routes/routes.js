@@ -196,7 +196,7 @@ router.post("/login", async(req,res) =>{
     //Se compara la contraseña enviada del frontend y la existente en la bd
     const match = await bcrypt.compare(password, Empleados[0].CONTRASEÑA);
     if (!match) return res.status(400).json({ msg: "Contraseña Erronea" });
-    res.json(Empleados);
+    res.status(200).json({msg:"Empleado Aceptado"})
   } catch (error) {
     res.status(404).json({ msg: "Empleado no encontrado" });
   }
