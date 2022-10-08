@@ -1,0 +1,41 @@
+.menu-container{
+    background: linear-gradient(to right,  rgb(7, 168, 7) ,rgb(144, 240, 54) );
+    height: 12vh;
+    width: 100%;
+   
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+    display: inline-block;
+    margin-left:22vw;
+  }
+  
+  li {
+    display: inline-block;
+    
+  }
+
+  .option-container{
+    background-color: transparent;
+    height: 12vh;
+    padding-top: 25px;
+    width: 8vw;
+    color: white;
+  }
+
+  .option-container:hover{
+    background-color: rgb(144, 240, 54) ;
+  }
+
+  a{
+    text-decoration: none
+  }
+
+  .img{
+    width:6.8vw;
+    border-radius: 120%;
+    display:inline-block;
+    margin-left: 2vw;
+  }
