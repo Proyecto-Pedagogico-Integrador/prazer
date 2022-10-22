@@ -329,7 +329,7 @@ router.post("/register", async (req, res) => {
     console.log(error);
   }
 });
-module.exports = router;
+
 
 
 
@@ -375,7 +375,7 @@ router.delete("/materiaPrima/:id", async(req, res) =>{
 router.post("/materiaPrima", async(req, res) =>{
   try {
     const {nombre, costo, cantidad, proveedor} = req.body
-    let sql = 'Insert into MATERIA_PRIMA (ID_MATERIA_PRIMA,NOMBRE,COSTO,CANTIDAD,ID_PROVEEDOR) values (id_producto.nextval,:nombre,:costo,:cantidad,:proveedor)'
+    let sql = 'Insert into MATERIA_PRIMA (ID_MATERIA_PRIMA,NOMBRE,COSTO,CANTIDAD,ID_PROVEEDOR) values (id_materia_prima.nextval,:nombre,:costo,:cantidad,:proveedor)'
     await DB.Open(sql, [nombre, costo, cantidad, proveedor], true)
     res.json({
       message: "Todo bien todo correcto y yo me que alegro",
@@ -400,3 +400,4 @@ router.put("/materiaPrima/:id", async(req,res)=>{
 
 //Servicio para proveedores
 
+module.exports = router;
