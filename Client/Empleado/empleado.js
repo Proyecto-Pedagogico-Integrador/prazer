@@ -88,6 +88,7 @@ const mostrarEmpleado = (empleadoBD) =>{
         <td>${empleado.PRIMER_APELLIDO}</td>
         <td>${empleado.SEGUNDO_APELLIDO}</td>
         <td>${empleado.CORREO}</td>
+        <td>${empleado.CONTRASEÑA}</td>
         <td>${empleado.TELEFONO}</td>
         <td>${fechaN}</td>
         <td>${empleado.SALARIO}</td>
@@ -184,6 +185,7 @@ on(document, 'click', '.btnBorrar', e => {
 let idForm = 0;
 on(document, 'click', '.btnEditar', e => {
     const fila = e.target.parentNode.parentNode
+    console.log(fila)
     idForm = fila.children[0].innerHTML
     const cedulaForm = fila.children[1].innerHTML
     const primerNombreForm = fila.children[2].innerHTML
@@ -191,14 +193,16 @@ on(document, 'click', '.btnEditar', e => {
     const primerApellidoForm = fila.children[4].innerHTML
     const segundoApellidoForm = fila.children[5].innerHTML
     const correoForm = fila.children[6].innerHTML
-    const telefonoForm = fila.children[7].innerHTML
-    const fechaNacimientoForm = fila.children[8]
-    const salarioForm = fila.children[9].innerHTML
-    const epsForm = fila.children[10].innerHTML
-    const generoForm = fila.children[11].innerHTML
-    const telefonoEmergenciaForm = fila.children[12].innerHTML
-    let nombre_Rh = fila.children[13].innerHTML
-    const nombreTipoEmpleadoForm = fila.children[14].innerHTML
+    const contrasenaForm= fila.children[7].innerHTML
+    console.log(contrasenaForm)
+    const telefonoForm = fila.children[8].innerHTML
+    const fechaNacimientoForm = fila.children[9]
+    const salarioForm = fila.children[10].innerHTML
+    const epsForm = fila.children[11].innerHTML
+    const generoForm = fila.children[12].innerHTML
+    const telefonoEmergenciaForm = fila.children[13].innerHTML
+    let nombre_Rh = fila.children[14].innerHTML
+    const nombreTipoEmpleadoForm = fila.children[15].innerHTML
     let rh = document.querySelector("#idRh")
     let te = document.getElementById('idTipoEmpleado')
     cedula.value = cedulaForm
@@ -207,6 +211,7 @@ on(document, 'click', '.btnEditar', e => {
     primerApellido.value = primerApellidoForm
     segundoApellido.value = segundoApellidoForm
     correo.value = correoForm
+    contrasena.value = contrasenaForm
     telefono.value = telefonoForm
     fechaNacimiento.value = fechaNacimientoForm.innerText
     salario.value = salarioForm
@@ -293,6 +298,7 @@ formArticulo.addEventListener('submit', (e) => {
                     primerApellido: primerApellido.value,
                     segundoApellido:segundoApellido.value,
                     correo:correo.value,
+                    contrasena:contrasena.value,
                     telefono:telefono.value,
                     fechaNacimiento:fechaNacimiento.value,
                     salario:salario.value,

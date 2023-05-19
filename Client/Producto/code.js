@@ -4,11 +4,20 @@ const contenedor = document.querySelector('tbody')
 let resultados = ''
 
 const modalArticulo = new bootstrap.Modal(document.getElementById('modalArticulo'))
-const formArticulo = document.querySelector('form')
+const modalArticuloVenta = new bootstrap.Modal(document.getElementById('modalArticuloVenta'))
+const formArticulo = document.getElementById('articulo')
 const nombre = document.getElementById('nombre')
 const precio = document.getElementById('precio')
 const peso = document.getElementById('peso')
 const cantidad = document.getElementById('cantidad')
+
+// venta
+const formArticuloVnder = document.getElementById('articuloVender')
+const nombreProductoVender = document.getElementById('nombreProductoVender')
+const precioProductoVender = document.getElementById('precioProductoVender')
+const netoProductoVender = document.getElementById('netoProductoVender')
+const cantidadProductoVender = document.getElementById('cantidadProductoVender')
+
 let opcion = ''
 
 btnCrear.addEventListener('click', () => {
@@ -31,7 +40,7 @@ const mostrar = (productoBD) => {
         <td>${producto.PRECIO}</td>
         <td>${producto.PESO}</td>
         <td>${producto.CANTIDAD}</td>
-        <td class="text-center"><a class="btnEditar btn">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a></td>
+        <td class="text-center"><a class="btnEditar btn">Editar</a><a class="btnBorrar btn btn-danger">Eliminar</a> <a class="btnVender btn btn-info">Vender</a></td>
         </tr>`
     })
     contenedor.innerHTML = resultados
@@ -130,6 +139,8 @@ on(document, 'click', '.btnEditar', e => {
     opcion = 'editar'
 })
 
+
+
 // Procedimiento para Crear y Editar
 formArticulo.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -199,5 +210,72 @@ formArticulo.addEventListener('submit', (e) => {
         }, 2000);
        
     }
+    
    
 })
+
+on(document, 'click', '.btnVender', e => {
+    const fila = e.target.parentNode.parentNode
+    console.log(fila)
+    id = fila.firstElementChild.innerHTML
+    const nombreForm = fila.children[1].innerHTML
+    const precioForm = fila.children[2].innerHTML
+    const cantidadForm = fila.children[4].innerHTML
+    console.log(`Id ${id} nombre ${nombreForm} precio ${precioForm} cantidad ${cantidadForm}`)
+    nombreProductoVender.value = nombreForm
+    precioProductoVender.value = precioForm
+    cantidadProductoVender.value = cantidadForm
+    netoProductoVender.value = (precioForm * cantidadForm)
+    if (cantidadProductoVender.value >= cantidadForm) {
+        opcion = 'vender'
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Producto Actualizado Exitosamente',
+            showConfirmButton: false,
+            timer: 2000,
+        })
+    } else {
+        console.log("No");
+    }
+    modalArticuloVenta.show()
+   
+})
+
+
+formArticuloVender.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (opcion == 'vender') {
+        console.log('Opcion vender')
+        {
+            fetch(url + '/' + idForm, {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre: nombre.value,
+                    precio: precio.value,
+                    cantidad: cantidad.value
+                })
+            })
+                .then(response => response.json())
+            modalArticulo.hide()
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Producto Actualizado Exitosamente',
+                showConfirmButton: false,
+                timer: 2000,
+            })
+        }
+        setTimeout(() => {
+            location.reload()
+        }, 2000);
+       
+    }
+    
+   
+})
+
+

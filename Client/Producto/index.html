@@ -60,7 +60,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="articulo">
           <div class="mb-2">
             <label for="nombre" class="col-form-label">Nombre</label>
             <input id="nombre" type="text" class="form-control" autofocus required>
@@ -77,7 +77,42 @@
             <label for="cantidad" class="col-form-label">Cantidad</label>
             <input id="cantidad" type="number" class="form-control" required></input>
           </div>
-        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btnGuardar">Guardar</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+<div id="modalArticuloVenta" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Producto a vender</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="articuloVender">
+          <div class="mb-2">
+            <label for="nombreProductoVender" class="col-form-label">Nombre</label>
+            <input id="nombreProductoVender" type="text" class="form-control" autofocus required>
+          </div>
+          <div class="mb-2">
+            <label for="precioProductoVender" class="col-form-label">Precio</label>
+            <input id="precioProductoVender" type="number" class="form-control" required></input>
+          </div>
+          <div class="mb-2">
+            <label for="cantidadProductoVender" class="col-form-label">Cantidad</label>
+            <input id="cantidadProductoVender" type="number" class="form-control" required></input>
+          </div>
+          <div class="mb-2">
+            <label for="netoProductoVender" class="col-form-label">Neto</label>
+            <input id="netoProductoVender" type="number" class="form-control" required disabled></input>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
