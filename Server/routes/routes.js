@@ -401,6 +401,67 @@ router.put("/materiaPrima/:id", async(req,res)=>{
   }
 })
 
-//Servicio para proveedores
+//Servicio para clientes
+
+router.get("/clientes", async (req, res) => {
+  try {
+    let sql = `SELECT * FROM CLIENTE`;
+    let clienteBD = [];
+    let result = await DB.Open(sql, [], false);
+    result.rows.map((cliente) => {
+      let userSchema = {
+        ID_CLIENTE: cliente[0],
+        NOMBRE: cliente[1],
+        NIT: cliente[2],
+        TELEFONO: cliente[3],
+        DIRECCION: cliente[4]
+      };
+      clienteBD.push(userSchema);
+    });
+    console.log(clienteBD);
+    res.json(clienteBD);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.delete("/clientes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id)
+    let sql = 'Delete from cliente where id_cliente = :id'
+    let result = await DB.Open(sql, [id], true);
+    console.log('Eliminado', result)
+    res.json(result)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.post("/clientes", async (req, res) => {
+  try {
+    const { nombre, nit, telefono, direccion } = req.body
+    let sql = 'Insert into CLIENTE (ID_CLIENTE,NOMBRE,NIT,TELEFONO,DIRECCION) values (id_cliente.nextval,:nombre,:nit,:telefono,:direccion)'
+    await DB.Open(sql, [nombre, nit, telefono, direccion], true)
+    res.json({
+      message: "Todo bien todo correcto y yo me que alegro",
+    });
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.put("/clientes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id)
+    const { nombre, nit, telefono, direccion } = req.body
+    let sql = 'Update cliente set nombre = :nombre, nit = :nit, telefono =:telefono, direccion =:direccion where id_cliente =:id'
+    await DB.Open(sql, [nombre, nit, telefono, direccion, id], true)
+    console.log(`cliente actualizado`)
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 module.exports = router;
