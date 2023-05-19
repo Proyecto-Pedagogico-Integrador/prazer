@@ -194,8 +194,9 @@ router.post("/login", async(req,res) =>{
       Empleados.push(userSchema);
     });
     //Se compara la contraseña enviada del frontend y la existente en la bd
-    const match = await bcrypt.compare(password, Empleados[0].CONTRASEÑA);
+   const match = await bcrypt.compare(password, Empleados[0].CONTRASEÑA);
     if (!match) return res.status(400).json({ msg: "Contraseña Erronea" });
+   // if (password != Empleados[0].CONTRASEÑA) return res.status(400).json({ msg: "Contraseña Erronea" });
     res.status(200).json({msg:"Empleado Aceptado"})
   } catch (error) {
     res.status(404).json({ msg: "Empleado no encontrado" });
@@ -208,9 +209,11 @@ router.put("/empleados/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id)
-    const { cedula, primerNombre, segundoNombre, primerApellido, segundoApellido, correo, telefono, fechaNacimiento, salario, eps, genero, telefonoEmergencia, idRh, idTipoEmpleado } = req.body;
-    let sql = `Update empleado set CEDULA=:cedula, PRIMER_NOMBRE = :primerNombre, SEGUNDO_NOMBRE = :segundoNombre, PRIMER_APELLIDO =:primerApellido, SEGUNDO_APELLIDO =:segundoApellido, CORREO=:correo,TELEFONO=:telefono, FECHA_DE_NACIMIENTO=TO_DATE(:fechaNacimiento,'yyyy/mm/dd'),SALARIO=:salario,EPS=:eps, GENERO=:genero,TELEFONO_EMERGENCIA=:telefonoEmergencia,ID_RH=:idRh, ID_TIPO_EMPLEADO=:idTipoEmpleado  where ID_EMPLEADO =:id`
-    await DB.Open(sql, [cedula, primerNombre, segundoNombre, primerApellido, segundoApellido, correo, telefono, fechaNacimiento, salario, eps, genero, telefonoEmergencia, idRh, idTipoEmpleado, id], true)
+    const { cedula, primerNombre, segundoNombre, primerApellido, segundoApellido, correo, contrasena,telefono, fechaNacimiento, salario, eps, genero, telefonoEmergencia, idRh, idTipoEmpleado } = req.body;
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(contrasena, salt);
+    let sql = `Update empleado set CEDULA=:cedula, PRIMER_NOMBRE = :primerNombre, SEGUNDO_NOMBRE = :segundoNombre, PRIMER_APELLIDO =:primerApellido, SEGUNDO_APELLIDO =:segundoApellido, CORREO=:correo,CONTRASEÑA=:hashPassword,TELEFONO=:telefono, FECHA_DE_NACIMIENTO=TO_DATE(:fechaNacimiento,'yyyy/mm/dd'),SALARIO=:salario,EPS=:eps, GENERO=:genero,TELEFONO_EMERGENCIA=:telefonoEmergencia,ID_RH=:idRh, ID_TIPO_EMPLEADO=:idTipoEmpleado  where ID_EMPLEADO =:id`
+    await DB.Open(sql, [cedula, primerNombre, segundoNombre, primerApellido, segundoApellido, correo, hashPassword,telefono, fechaNacimiento, salario, eps, genero, telefonoEmergencia, idRh, idTipoEmpleado, id], true)
     console.log(`empleado actualizado`)
   } catch (error) {
     console.log(error)
