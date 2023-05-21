@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <title>Reportes Regulatorios Prazer</title>
     <link rel="stylesheet" href="../menu.css" type="text/css">
-    <link rel="stylesheet" href="./mPrima.css" type="text/css">
+    <link rel="stylesheet" href="./index.css" type="text/css">
 </head>
 
 <body>
@@ -67,9 +67,9 @@
                 <tr class="text-center">
                     <th>ID</th>
                     <th>NOMBRE</th>
-                    <th>COSTO</th>
+                    <th>PRECIO</th>
+                    <th>PESO</th>
                     <th>CANTIDAD</th>
-                    <th>PROVEEDOR</th>
                     <th>ACCIONES</th>
                 </tr>
             </thead>
@@ -81,32 +81,67 @@
 
    
 
-<div id="modalMPrima" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="modalArticulo" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Materia Prima</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Producto</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="articulo">
           <div class="mb-2">
             <label for="nombre" class="col-form-label">Nombre</label>
             <input id="nombre" type="text" class="form-control" autofocus required>
           </div>
           <div class="mb-2">
-            <label for="costo" class="col-form-label">Costo</label>
-            <input id="costo" type="number" class="form-control" required></input>
+            <label for="precio" class="col-form-label">Precio</label>
+            <input id="precio" type="number" class="form-control" required></input>
+          </div>
+          <div class="mb-2">
+            <label for="peso" class="col-form-label">Peso</label>
+            <input id="peso" type="number" class="form-control" required></input>
           </div>
           <div class="mb-2">
             <label for="cantidad" class="col-form-label">Cantidad</label>
             <input id="cantidad" type="number" class="form-control" required></input>
           </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btnGuardar">Guardar</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+<div id="modalArticuloVenta" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Producto a vender</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="articuloVender">
           <div class="mb-2">
-            <label for="proveedor" class="col-form-label">Proveedor</label>
-            <select id="proveedor" class="form-select" aria-label="Default select example"></select>
+            <label for="nombreProductoVender" class="col-form-label">Nombre</label>
+            <input id="nombreProductoVender" type="text" class="form-control" autofocus required>
           </div>
-        
+          <div class="mb-2">
+            <label for="precioProductoVender" class="col-form-label">Precio</label>
+            <input id="precioProductoVender" type="number" class="form-control" required></input>
+          </div>
+          <div class="mb-2">
+            <label for="cantidadProductoVender" class="col-form-label">Cantidad</label>
+            <input id="cantidadProductoVender" type="number" class="form-control" required></input>
+          </div>
+          <div class="mb-2">
+            <label for="netoProductoVender" class="col-form-label">Neto</label>
+            <input id="netoProductoVender" type="number" class="form-control" required disabled></input>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -127,7 +162,7 @@
     <!-- JavaScript -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="mPrima.js"></script>
+    <script src="code.js"></script>
 </body>
 
 </html>
