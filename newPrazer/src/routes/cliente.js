@@ -58,4 +58,20 @@ router.post('/edit/:id', async (req, res) => {
     res.redirect('/Cliente');
 });
 
+router.get('/listFactura/:id_cliente', isLoggedIn, async (req, res) => {
+    const { id_cliente } = req.params;
+    const factura = await pool.query('SELECT * FROM factura where id_cliente = ?',[id_cliente]);
+    const row =  await pool.query('SELECT id_cliente as cliente FROM cliente where id_cliente = ?',[id_cliente]);
+    console.log(row)
+    res.render('cliente/listFactura', { factura,row });
+});
+
+router.get('/addFactura/:id_cliente', async (req, res) => {
+    const { id_cliente } = req.params;
+    const row =  await pool.query('SELECT id_cliente as cliente FROM cliente where id_cliente = ?',[id_cliente]);
+    console.log("Add"+row)
+    const producto = await pool.query('SELECT * FROM producto')
+    res.render(`cliente/addFactura`,{row,producto});
+});
+
 module.exports = router;
