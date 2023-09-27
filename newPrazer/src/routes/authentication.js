@@ -35,9 +35,18 @@ router.post('/signin', (req, res, next) => {
   })(req, res, next);
 });
 
+// router.get('/logout', (req, res) => {
+//   req.logOut();
+//   res.redirect('/');
+// });
+
 router.get('/logout', (req, res) => {
-  req.logOut();
-  res.redirect('/');
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/signin');
+  });
 });
 
 router.get('/profile', isLoggedIn, (req, res) => {

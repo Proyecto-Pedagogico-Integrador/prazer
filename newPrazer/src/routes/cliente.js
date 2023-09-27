@@ -17,9 +17,18 @@ router.post("/add", async (req, res) => {
             telefono, 
             direccion
         }
-        await pool.query('INSERT INTO cliente set ?',[newCliente]);
-        req.flash('success', 'Cliente guardado exitosamente');
-        res.redirect('/cliente');
+        const validarCliente =  await pool.query(`SELECT  nombre, nit, telefono, direccion from cliente WHERE nit = '${newCliente.nit}'`);
+        console.log('validarCliente',validarCliente)
+        console.log('newCliente',newCliente)
+        if (validarCliente[0].nit === newCliente.nit )
+        {
+            req.flash('message', 'Cliente YA EXISTE');
+            res.redirect('/Cliente');
+        }else{
+            await pool.query('INSERT INTO cliente set ?',[newCliente]);
+            req.flash('success', 'Cliente guardado exitosamente');
+            res.redirect('/cliente');
+        }
     } catch (error) {
         console.log(error)
     }
@@ -53,9 +62,21 @@ router.post('/edit/:id', async (req, res) => {
         telefono, 
         direccion
     }
-    await pool.query('UPDATE cliente set ? WHERE id_cliente = ?', [newCliente, id]);
-    req.flash('success', 'Cliente actualizado exitosamente');
-    res.redirect('/Cliente');
+    const validarCliente =  await pool.query(`SELECT  nombre, nit, telefono, direccion WHERE id_cliente = ${id}`);
+    if (validarCliente[0].nombre === newCliente.nombre &&
+        validarCliente[0].nit === newCliente.nit &&
+        validarCliente[0].telefono === newCliente.telefono &&
+        validarCliente[0].direccion === newCliente.direccion
+    ){
+        req.flash('message', 'Cliente no ha cambiado');
+        res.redirect('/Cliente');
+    }else{
+        await pool.query('UPDATE cliente set ? WHERE id_cliente = ?', [newCliente, id]);
+        req.flash('success', 'Cliente actualizado exitosamente');
+        res.redirect('/Cliente');
+    }
+
+  
 });
 
 router.get('/listFactura/:id_cliente', isLoggedIn, async (req, res) => {

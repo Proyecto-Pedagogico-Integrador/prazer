@@ -18,10 +18,10 @@ passport.use('local.signin', new LocalStrategy({
     if (validPassword) {
       done(null, user, req.flash('success', 'Welcome ' + user.username));
     } else {
-      done(null, false, req.flash('message', 'Incorrect Password'));
+      done(null, false, req.flash('message', 'The Username does not exists and/or Incorrect Password'));
     }
   } else {
-    return done(null, false, req.flash('message', 'The Username does not exists.'));
+    return done(null, false, req.flash('message', 'The Username does not exists and/or Incorrect Password'));
   }
 }));
 
