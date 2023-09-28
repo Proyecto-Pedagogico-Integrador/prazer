@@ -1,0 +1,45 @@
+<div class="container p-4">
+    <div class="row" style="position: relative;">
+
+        <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
+            <a class="btn btn-outline-success" href="/cliente">
+                <span class="icon text-dark-50">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text"></span>
+            </a>
+        </span>
+
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-body shadow-lg">
+                    <h3 style="text-align: center;">Agregar Cliente</h3>
+                    <br>
+                    <form action="/cliente/add" method="POST">
+                        <div class="form-group">
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" autofocus required
+                               onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="nit" class="form-control" placeholder="Nit" required
+                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 45">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="telefono" class="form-control" placeholder="Telefono" required
+                             onkeypress="return (event.charCode >= 48 && event.charCode <= 57)">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="direccion" class="form-control" placeholder="Dirección" required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-block">
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

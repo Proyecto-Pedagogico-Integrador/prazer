@@ -1,0 +1,39 @@
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form id="form" name="form" action="/cliente/add" method="POST">
+                        <div class="form-group">
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="nit" class="form-control" placeholder="Nit">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="telefono" class="form-control" placeholder="Telefono">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="direccion" class="form-control" placeholder="Dirección">
+                        </div>
+                        <div>
+                            {{#each producto}}
+                            <a onclick="AgregarCampos();">Agregar Campos</a>
+                            <div id="campos">
+
+                            </div>
+                            {{/each}}
+                        </div>
+                            <div class="form-group">
+                                <button class="btn btn-success btn-block">
+                                    Guardar
+                                </button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

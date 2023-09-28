@@ -1,0 +1,88 @@
+<div class="container p-4">
+    <div class="container mt-4 shadow-lg p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
+
+        
+
+        <div class="container">
+            <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
+                <a class="btn btn-outline-success" href="/producto/add">
+                    <span class="icon text-dark-50">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span class="text"></span>
+                </a>
+            </span>
+
+            <h3 style="display: inline-block; margin-left: 40%">Productos</h3>
+        </div>
+        <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
+            <thead class="bg-dark text-white">
+                <tr class="text-center">
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>PRECIO</th>
+                    <th>PESO</th>
+                    <th>CANTIDAD</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody >
+                {{#each producto}}
+                <tr style="text-align: center;">
+                    <td>{{id_producto}}</td>
+                    <td>{{nombre}}</td>
+                    <td>{{precio}}</td>
+                    <td>{{peso}}</td>
+                    <td>{{cantidad}}</td>
+                    <td class="text-center">
+
+                        <span class="text" tabindex="0" data-placement="top" title="Editar">
+                            <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
+                                <span class="icon text-dark-50">
+                                    <i class="fas fa-pen"></i>
+                                </span>
+                                <span class="text"></span>
+                            </a>
+                        </span>
+
+                        <span class="text" tabindex="0" data-placement="top" title="Eliminar">
+                            <a class="btn btn-outline-danger"
+                               href="javascript:EliminarProducto({{id_producto}})">
+                                <span class="icon text-dark-50">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                                <span class="text"></span>
+                            </a>
+                        </span>
+                </tr>
+                {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p>No hay productos por el momento :C</p>
+                <a href="/producto/add">Crea Uno!</a>
+            </div>
+        </div>
+        {{/each}}
+            </tbody>
+        </table>
+
+        
+
+    </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    var table = $('#tabla').DataTable({
+    });
+  });
+    function EliminarProducto(id_producto) {
+    var mensaje = confirm("¿Desea eliminar el producto seleccionado?");
+    if (mensaje) {
+      window.location = "/producto/delete/" + id_producto;
+    }
+    else {
+      return;
+    }
+  }
+</script>
