@@ -57,6 +57,7 @@ app.use(require('./routes/authentication'));
 app.use('/links', require('./routes/links'));
 app.use('/producto', require('./routes/producto'));
 app.use('/cliente', require('./routes/cliente'));
+app.use('/inicio', require('./routes/index'));
 
 
 // Public
