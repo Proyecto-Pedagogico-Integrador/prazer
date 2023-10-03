@@ -1,4 +1,4 @@
-{{!-- <main class="index">
+{{! <main class="index">
     <header class="masthead d-flex">
         <div class="container text-center my-auto">
             <h1 class="mb-1">Favorite Links</h1>
@@ -11,89 +11,126 @@
         </div>
         <div class="overlay"></div>
     </header>
-</main> --}}
+</main> }}
 
-<main class="index">
-  <head>
-    <link rel="stylesheet" href="img/styles/index.css" />
-  </head>
-  <header class="masthead d-flex">
+<head>
+  <link rel="stylesheet" href="img/styles/index.css" />
+</head>
+<body>
 
-   
+  <main class="index">
+    <div class="container">
+<div class="carousel-container col-md-4 mx-auto">
+      <div class="card text-center" >
 
-    <div class="container p-4">
-
-      <div class="row">
-
-        
+        <div class="card-body" style="background-color: #edead1;">
           <div
-            id="carouselExampleSlidesOnly"
+            id="carouselExampleIndicators"
             class="carousel slide"
             data-ride="carousel"
-            style="width: 60%"
           >
+
             <div class="carousel-inner">
               <div class="carousel-item active">
                 <img
                   class="d-block w-100"
-                  src="img/img/fondo.jpg"
+                  src="/img/img/producto1.jpg"
                   alt="First slide"
-                  style="height: 90vh;"
                 />
               </div>
               <div class="carousel-item">
                 <img
                   class="d-block w-100"
-                  src="img/img/prazer.png"
+                  src="/img/img/producto2.jpg"
                   alt="Second slide"
-                  style="height: 90vh;"
                 />
               </div>
+              <div class="carousel-item">
+                <img
+                  class="d-block w-100"
+                  src="/img/img/producto3.jpg"
+                  alt="Third slide"
+                />
+              </div>
+              <ol class="carousel-indicators">
+                <li
+                  data-target="#carouselExampleIndicators"
+                  data-slide-to="0"
+                  class="active"
+                ></li>
+                <li
+                  data-target="#carouselExampleIndicators"
+                  data-slide-to="1"
+                ></li>
+                <li
+                  data-target="#carouselExampleIndicators"
+                  data-slide-to="2"
+                ></li>
+              </ol>
             </div>
 
           </div>
-        
-
-          <div class="col-md-4 mx-auto" style="background-color: rgba(14, 10, 10, 0.801); height: 85vh">
-            <div class="card text-center" style="margin-top: 5vh;">
-              <div class="card-header">
-                <h3>Reportes Regulatorios Prazer</h3>
-              </div>
-              <img
-                src="img/img/prazer.png"
-                alt="Logo"
-                class="card-img-top mx-auto m-2 rounded-circle w-50"
-              />
-              <div class="card-body">
-                <form action="/signin" method="POST">
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      name="username"
-                      placeholder="Usuario"
-                      class="form-control"
-                      autofocus
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Contraseña"
-                      class="form-control"
-                    />
-                  </div>
-                  <button class="btn btn-primary btn-block">
-                    Iniciar Sesión
-                  </button>
-                </form>
-
-              </div>
-            </div>
-          </div>
-        
-
+        </div>
       </div>
     </div>
-  </header>
-</main>
+
+    
+
+      <div class="signin col-md-4 mx-auto">
+        <div class="card text-center" style="margin-top: 5vh;">
+
+          <div class="card-body" style="background-color: #edead1;">
+            <h3>Reportes Regulatorios Prazer</h3>
+            <img
+              src="img/img/prazer.png"
+              alt="Logo"
+              class="card-img-top mx-auto m-2 rounded-circle w-50"
+            />
+            <form action="/signin" method="POST">
+
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Usuario"
+                  class="form-control"
+                  autofocus
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Contraseña"
+                  class="form-control"
+                  id="password"
+                />
+                <span
+                  class="toggle-password"
+                  onclick="togglePasswordVisibility()"
+                >
+                  <i class="fa fa-eye-slash"></i>
+                </span>
+
+              </div>
+              <button class="btn btn-primary btn-block">
+                Iniciar Sesión
+              </button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function togglePasswordVisibility() { const passwordInput =
+    document.getElementById('password'); const toggleButton =
+    document.querySelector('.toggle-password'); if (passwordInput.type ===
+    'password') { passwordInput.type = 'text'; toggleButton.innerHTML = '<i
+    class="fa fa-eye"></i>'; } else { passwordInput.type = 'password';
+    toggleButton.innerHTML = '<i class="fa fa-eye-slash"></i>'; } }
+  </script>
+
+</body>
