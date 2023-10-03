@@ -43,7 +43,7 @@ router.get('/delete/:id_cliente', async (req, res) => {
     const { id_cliente } = req.params;
     await pool.query('DELETE FROM cliente WHERE id_cliente = ?', [id_cliente]);
     req.flash('success', 'Cliente eliminado exitosamente');
-    res.redirect('/Cliente');
+    res.redirect('/cliente');
 });
 
 router.get('/edit/:id', async (req, res) => {
@@ -69,11 +69,11 @@ router.post('/edit/:id', async (req, res) => {
         validarCliente[0].direccion === newCliente.direccion
     ){
         req.flash('message', 'Cliente no ha cambiado');
-        res.redirect('/Cliente');
+        res.redirect('/cliente');
     }else{
         await pool.query('UPDATE cliente set ? WHERE id_cliente = ?', [newCliente, id]);
         req.flash('success', 'Cliente actualizado exitosamente');
-        res.redirect('/Cliente');
+        res.redirect('/cliente');
     }
 
   

@@ -25,7 +25,7 @@ router.post('/signin', (req, res, next) => {
   req.check('password', 'Password is Required').notEmpty();
   const errors = req.validationErrors();
   if (errors.length > 0) {
-    req.flash('message', errors[0].msg);
+    req.flash('message', 'Usuario y/o contraseña inválida!');
     res.redirect('/inicio');
   }
   passport.authenticate('local.signin', {

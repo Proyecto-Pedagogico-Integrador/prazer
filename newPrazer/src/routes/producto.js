@@ -24,7 +24,7 @@ router.post("/add", async (req, res) => {
         console.log('newProducto',nombreWithoutSpaces);
         
         if (validarProducto[0].nombre === nombreWithoutSpaces){
-            req.flash('message', 'Producto YA EXISTE');
+            req.flash('message', 'El producto ya existe');
             res.redirect('/producto');
         }else{
             await pool.query('INSERT INTO producto set ?',[newProducto]);
