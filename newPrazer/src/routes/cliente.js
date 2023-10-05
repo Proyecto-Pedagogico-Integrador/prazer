@@ -43,6 +43,11 @@ router.get("/", isLoggedIn, async (req, res) => {
   res.render("cliente/list", { cliente });
 });
 
+router.get('/delete/:id_cliente', async (req, res) => {
+    const { id_cliente } = req.params;
+    await pool.query('DELETE FROM cliente WHERE id_cliente = ?', [id_cliente]);
+    req.flash('success', 'Cliente eliminado exitosamente');
+    res.redirect('/cliente');
 router.get("/delete/:id_cliente", async (req, res) => {
   const { id_cliente } = req.params;
   await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);

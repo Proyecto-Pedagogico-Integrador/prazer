@@ -10,8 +10,8 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', passport.authenticate('local.signup', {
-  successRedirect: '/profile',
-  failureRedirect: '/signup',
+  successRedirect: '/cliente',
+  failureRedirect: '/inicio',
   failureFlash: true
 }));
 
@@ -25,12 +25,12 @@ router.post('/signin', (req, res, next) => {
   req.check('password', 'Password is Required').notEmpty();
   const errors = req.validationErrors();
   if (errors.length > 0) {
-    req.flash('message', errors[0].msg);
-    res.redirect('/signin');
+    req.flash('message', 'Usuario y/o contraseña inválida!');
+    res.redirect('/inicio');
   }
   passport.authenticate('local.signin', {
-    successRedirect: '/profile',
-    failureRedirect: '/signin',
+    successRedirect: '/cliente',
+    failureRedirect: '/inicio',
     failureFlash: true
   })(req, res, next);
 });
@@ -45,7 +45,7 @@ router.get('/logout', (req, res) => {
     if (err) {
       console.error(err);
     }
-    res.redirect('/signin');
+    res.redirect('/inicio');
   });
 });
 
