@@ -22,10 +22,10 @@ router.post("/add", async (req, res) => {
         const validarProducto = await pool.query(`SELECT REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '') as nombre, precio, peso,cantidad FROM producto WHERE REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '') = '${nombreWithoutSpaces}'`);
         console.log('validarProducto',validarProducto);
         console.log('newProducto',nombreWithoutSpaces);
-        
-        if (validarProducto[0].nombre === nombreWithoutSpaces){
-            req.flash('message', 'Producto YA EXISTE');
-            res.redirect('/producto');
+        if (validarProducto.length > 0){
+            if (validarProducto[0].nombre === nombreWithoutSpaces){
+                req.flash('message', 'Producto YA EXISTE');
+                res.redirect('/producto');}
         }else{
             await pool.query('INSERT INTO producto set ?',[newProducto]);
             req.flash('success', 'Producto guardado exitosamente');
@@ -61,14 +61,22 @@ router.get('/edit/:id', async (req, res) => {
 router.post('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { nombre, precio, peso, cantidad } = req.body;
+ 
     const newProducto = {
         nombre,
-        precio,
-        peso,
-        cantidad
+        precio : parseInt(precio),
+        peso : parseInt(peso),
+        cantidad : parseInt(cantidad)
     }
 
-    const validarProducto = await pool.query(`SELECT nombre, precio, peso, cantidad FROM producto WHERE id_producto = ${id}`);
+    const validarProducto = await pool.query(`
+    SELECT 
+        nombre, 
+        precio, 
+        peso, 
+        cantidad 
+    FROM producto 
+    WHERE id_producto = ${id}`);
     console.log('validarProducto:', validarProducto);
     console.log('newProducto:', newProducto);
 
@@ -88,5 +96,34 @@ router.post('/edit/:id', async (req, res) => {
     }
 });
 
+
+// Ruta para obtener los datos de un producto por su ID
+router.get('/obtenerDatosProducto/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const producto = await pool.query('SELECT precio, peso, cantidad FROM producto WHERE id_producto = ?', [id]);
+        
+        if (producto.length > 0) {
+            res.json(producto[0]);
+        } else {
+            res.status(404).json({ error: 'Producto no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener datos del producto:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+router.get('/obtenerDatosProducto', async (req, res) => {
+    try {
+       
+        const producto = await pool.query('SELECT * FROM producto' );
+        res.json(producto);
+        
+    } catch (error) {
+        console.error('Error al obtener datos del producto:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 module.exports = router;
