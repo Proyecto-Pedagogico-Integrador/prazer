@@ -3,6 +3,7 @@ const router = express.Router();
 
 const pool = require("../database");
 const { isLoggedIn } = require("../lib/auth");
+const { resourceUsage } = require("process");
 
 router.get("/add", (req, res) => {
   res.render("cliente/add");
@@ -43,16 +44,11 @@ router.get("/", isLoggedIn, async (req, res) => {
   res.render("cliente/list", { cliente });
 });
 
-router.get('/delete/:id_cliente', async (req, res) => {
-    const { id_cliente } = req.params;
-    await pool.query('DELETE FROM cliente WHERE id_cliente = ?', [id_cliente]);
-    req.flash('success', 'Cliente eliminado exitosamente');
-    res.redirect('/cliente');
 router.get("/delete/:id_cliente", async (req, res) => {
   const { id_cliente } = req.params;
   await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
   req.flash("success", "Cliente eliminado exitosamente");
-  res.redirect("/Cliente");
+  res.redirect("/cliente");
 });
 
 router.get("/edit/:id", async (req, res) => {
@@ -75,7 +71,7 @@ router.post("/edit/:id", async (req, res) => {
     direccion,
   };
   const validarCliente = await pool.query(
-    `SELECT  nombre, nit, telefono, direccion WHERE id_cliente = ${id}`
+    `SELECT nombre, nit, telefono, direccion from cliente WHERE id_cliente = ${id}`
   );
   if (
     validarCliente[0].nombre === newCliente.nombre &&
@@ -137,11 +133,23 @@ router.post("/addFactura/:row", async (req, res) => {
       cantidadBD,
       precio,
     } = req.body;
-
+   
     const productosFiltrados = [];
     const productosNoValidos = [];
-    const productosPedido = []
+    const productosPedido = [];
+    inicio = 0;
+
     if (productosSeleccionados !== undefined) {
+      for (let i = 0; i < productosSeleccionados.length; i++) {
+        inicio = inicio + parseInt(cantidadProductosSeleccionados[i]);
+      }
+
+      if (inicio == 0) {
+        req.flash("message", "No ha enviado productos");
+        return res.redirect("/Cliente");
+      }
+      
+
       // Itera sobre los productos seleccionados y sus cantidades
       for (let i = 0; i < productosSeleccionados.length; i++) {
         const id_producto = productosSeleccionados[i];
@@ -225,24 +233,31 @@ router.post("/addFactura/:row", async (req, res) => {
         "INSERT INTO factura (total, iva, fecha_factura, factura_oficial, id_empleado, id_cliente) VALUES (?, ?, ?, 'si', ?, ?)",
         [sumaTotal, iva, fechaMySQL[0].fecha, req.user.id, row]
       );
-      const id_factura = await pool.query("select id_factura from factura where fecha_factura = ? and id_empleado = ? and id_cliente = ?",[fechaMySQL[0].fecha, req.user.id, row]);
-      console.log(id_factura)
-      
+      const id_factura = await pool.query(
+        "select id_factura from factura where fecha_factura = ? and id_empleado = ? and id_cliente = ?",
+        [fechaMySQL[0].fecha, req.user.id, row]
+      );
+      console.log(id_factura);
+
       for (let i = 0; i < productosFiltrados.length; i++) {
         productosPedido.push({
           ID: productosFiltrados[i].ID,
           CANTIDAD: productosFiltrados[i].CANTIDAD,
-          ID_FACTURA: id_factura[0].id_factura // Asegúrate de extraer el valor correcto de id_factura
+          ID_FACTURA: id_factura[0].id_factura, // Asegúrate de extraer el valor correcto de id_factura
         });
       }
-      
+
       for (let i = 0; i < productosPedido.length; i++) {
-        const insertPedido = await pool.query("INSERT INTO pedido_producto (cantidad_producto, id_producto, id_factura) VALUES (?, ?, ?)", [productosPedido[i].CANTIDAD, productosPedido[i].ID, productosPedido[i].ID_FACTURA]);
+        const insertPedido = await pool.query(
+          "INSERT INTO pedido_producto (cantidad_producto, id_producto, id_factura) VALUES (?, ?, ?)",
+          [
+            productosPedido[i].CANTIDAD,
+            productosPedido[i].ID,
+            productosPedido[i].ID_FACTURA,
+          ]
+        );
       }
       req.flash("success", "Se reciben productos válidos");
-      return res.redirect("/Cliente");
-    } else {
-      req.flash("message", "No ha enviado productos");
       return res.redirect("/Cliente");
     }
   } catch (error) {
