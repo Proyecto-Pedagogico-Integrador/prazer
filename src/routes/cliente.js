@@ -48,11 +48,6 @@ router.get('/delete/:id_cliente', async (req, res) => {
     await pool.query('DELETE FROM cliente WHERE id_cliente = ?', [id_cliente]);
     req.flash('success', 'Cliente eliminado exitosamente');
     res.redirect('/cliente');
-router.get("/delete/:id_cliente", async (req, res) => {
-  const { id_cliente } = req.params;
-  await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
-  req.flash("success", "Cliente eliminado exitosamente");
-  res.redirect("/Cliente");
 });
 
 router.get("/edit/:id", async (req, res) => {
@@ -239,6 +234,9 @@ router.post("/addFactura/:row", async (req, res) => {
       for (let i = 0; i < productosPedido.length; i++) {
         const insertPedido = await pool.query("INSERT INTO pedido_producto (cantidad_producto, id_producto, id_factura) VALUES (?, ?, ?)", [productosPedido[i].CANTIDAD, productosPedido[i].ID, productosPedido[i].ID_FACTURA]);
       }
+      console.log('productosFiltrados',productosFiltrados)
+      console.log('productosNoValidos',productosNoValidos)
+      console.log('productosPedido',productosPedido)
       req.flash("success", "Se reciben productos válidos");
       return res.redirect("/Cliente");
     } else {
