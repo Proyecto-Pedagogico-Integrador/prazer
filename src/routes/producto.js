@@ -17,9 +17,9 @@ router.post("/add", async (req, res) => {
             peso, 
             cantidad
         }
-        const nombreWithoutSpaces = nombre.replace(/\s/g, '');
+        const nombreWithoutSpaces = nombre.replace(/\s/g, '').toLowerCase();
 
-        const validarProducto = await pool.query(`SELECT REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '') as nombre, precio, peso,cantidad FROM producto WHERE REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '') = '${nombreWithoutSpaces}'`);
+        const validarProducto = await pool.query(`SELECT LOWER(REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '')) as nombre, precio, peso,cantidad FROM producto WHERE LOWER(REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '')) = '${nombreWithoutSpaces}'`);
         console.log('validarProducto',validarProducto);
         console.log('newProducto',nombreWithoutSpaces);
         if (validarProducto.length > 0){

@@ -239,6 +239,7 @@ router.post("/addFactura/:row", async (req, res) => {
       console.log('productosPedido',productosPedido)
       req.flash("success", "Se reciben productos válidos");
       return res.redirect("/Cliente");
+      console.log('Comienzo del buffer')
     } else {
       req.flash("message", "No ha enviado productos");
       return res.redirect("/Cliente");
