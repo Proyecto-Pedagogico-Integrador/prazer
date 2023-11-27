@@ -12,7 +12,9 @@
         <tbody>
             {{#each productosList}}
             <tr>
-                <td>{{nombre}}</td>
+                <td>
+                    <input type="text" name="nombreProducto" value="{{nombre}}">
+                </td>
                 <td>
                     <input type="number" name="cantidadBD" value="{{cantidad}}" min="0">
                 </td>
