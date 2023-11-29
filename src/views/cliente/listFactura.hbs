@@ -1,46 +1,48 @@
-<div class="container p-4">
-    <div class="container mt-4 shadow-lg p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
+<head>
+    <link rel="stylesheet" href="/img/styles/factura.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+</head>
 
+<div class="container p-4">
+    <div class="container2 mt-4 p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
 
         <div class="container">
-
-
             <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
-               {{#each row}} 
+                {{#each row}} 
                 <a class="btn btn-outline-success" href="/cliente/addFactura/{{cliente}}">
                     <span class="icon text-dark-50">
                         <i class="fas fa-plus"></i>
                     </span>
                     <span class="text"></span>
                 </a>
-                 {{/each}}
+                {{/each}}
             </span>
 
-            <h3 style="display: inline-block; margin-left: 40%">Clientes</h3>
+            <h3 style="display: inline-block; margin-left: 40%">Facturas</h3>
         </div>
 
         <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
             <thead class="bg-dark text-white">
                 <tr class="text-center">
-                    <th>id_factura</th>
-                    <th>total</th>
-                    <th>iva</th>
-                    <th>fecha_factura</th>
-                    <th>factura_oficial</th>
-                    <th>id_empleado</th>
+                    <th>ID FACTURA</th>
+                    <th>FECHA</th>
+                    <th>IVA</th>
+                    <th>TOTAL</th>
+                    <th>EMPLEADO</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each factura}}
                 <tr style="text-align: center;">
                     <td>{{id_factura}}</td>
-                    <td>{{total}}</td>
-                    <td>{{iva}}</td>
                     <td>{{fecha_factura}}</td>
-                    <td>{{factura_oficial}}</td>
+                    <td>{{iva}}</td>
+                    <td>{{total}}</td>
                     <td>{{id_empleado}}</td>
                     <td class="text-center">
                 </tr>
+
                 {{else}}
 
                 {{#each row}}

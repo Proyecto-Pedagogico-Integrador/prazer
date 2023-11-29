@@ -82,7 +82,7 @@
           <div class="card-body" style="background-color: #edead1;">
             <h3>Reportes Regulatorios Prazer</h3>
             <img
-              src="img/img/prazer.png"
+              src="/img/img/prazer.png"
               alt="Logo"
               class="card-img-top mx-auto m-2 rounded-circle w-50"
             />
@@ -125,12 +125,17 @@
   </main>
 
   <script>
-    function togglePasswordVisibility() { const passwordInput =
-    document.getElementById('password'); const toggleButton =
-    document.querySelector('.toggle-password'); if (passwordInput.type ===
-    'password') { passwordInput.type = 'text'; toggleButton.innerHTML = '<i
-    class="fa fa-eye"></i>'; } else { passwordInput.type = 'password';
-    toggleButton.innerHTML = '<i class="fa fa-eye-slash"></i>'; } }
+    function togglePasswordVisibility() { 
+      const passwordInput = document.getElementById('password'); 
+      const toggleButton = document.querySelector('.toggle-password'); 
+      if (passwordInput.type ==='password') { 
+        passwordInput.type = 'text'; 
+        toggleButton.innerHTML = '<i class="fa fa-eye"></i>'; 
+      } else { 
+        passwordInput.type = 'password';
+        toggleButton.innerHTML = '<i class="fa fa-eye-slash"></i>'; 
+      } 
+    }
   </script>
 
 </body>

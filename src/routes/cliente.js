@@ -41,9 +41,30 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.get("/", isLoggedIn, async (req, res) => {
-  const cliente = await pool.query("SELECT * FROM cliente");
-  res.render("cliente/list", { cliente });
+router.get('/:page?', async (req, res) => {
+  try {
+      const limit = 5;
+      const currentPage = req.params.page ? parseInt(req.params.page) : 1;
+      const offset = (currentPage - 1) * limit;
+
+      const [results, itemCount] = await Promise.all([
+          pool.query('SELECT * FROM cliente LIMIT ? OFFSET ?', [limit, offset]),
+          pool.query('SELECT COUNT(*) as itemCount FROM cliente')
+      ]);
+
+      const pageCount = Math.ceil(itemCount[0].itemCount / limit);
+
+      res.render('cliente/list', {
+          cliente: results,
+          pageCount,
+          itemCount: itemCount[0].itemCount,
+          currentPage,
+          pages: Array.from({ length: pageCount }, (_, i) => i + 1)
+      });
+  } catch (error) {
+      console.error('Error al obtener clientes:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });
 
 router.get("/delete/:id_cliente", async (req, res) => {

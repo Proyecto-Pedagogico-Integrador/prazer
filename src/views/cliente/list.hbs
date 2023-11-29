@@ -49,7 +49,7 @@
                                 <span class="text"></span>
                             </a>
                         </span>
-                        {{!-- <span class="text" tabindex="0" data-placement="top" title="Factura" 
+                        <span class="text" tabindex="0" data-placement="top" title="Factura" 
                             style="display: inline-block">
                             <a class="btn btn-outline-success" href="/cliente/listFactura/{{id_cliente}}" >
                                 <span class="icon text-dark-50">
@@ -57,7 +57,7 @@
                                 </span>
                                 <span class="text"></span>
                             </a>
-                        </span> --}}
+                        </span> 
                         <span class="text" tabindex="0" data-placement="top" title="Eliminar">
                             <a class="btn btn-outline-danger"
                                 href="javascript:EliminarCliente({{id_cliente}})">
@@ -78,6 +78,18 @@
                 {{/each}}
             </tbody>
         </table>
+
+        <div class="pagination" style="display: flex; justify-content: center; align-items: center;">
+                {{#each pages}}
+                {{#if (eq this ../currentPage)}}
+                     <button class="btn btn-info">{{this}}</button>
+                 {{else}}
+                    <button class="btn btn-outline-info" onclick="window.location.href='/cliente/{{this}}'" aria-label="Page {{this}}">
+                 {{this}}
+                    </button>
+                {{/if}}
+                {{/each}}
+            </div>
     </div>
 </div>
 </body>
