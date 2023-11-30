@@ -30,6 +30,7 @@
                     <th>IVA</th>
                     <th>TOTAL</th>
                     <th>EMPLEADO</th>
+                    <th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,16 @@
                     <td>{{total}}</td>
                     <td>{{id_empleado}}</td>
                     <td class="text-center">
+                        <span class="text" tabindex="0" data-placement="top" title="Factura" 
+                            style="display: inline-block">
+                            <a class="btn btn-outline-info" href="/cliente/showFactura" >
+                                <span class="icon text-dark-50">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                                <span class="text"></span>
+                            </a>
+                        </span> 
+                    </td>
                 </tr>
 
                 {{else}}

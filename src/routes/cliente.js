@@ -8,6 +8,10 @@ router.get("/add", (req, res) => {
   res.render("cliente/add");
 });
 
+router.get('/showFactura', (req, res) => {
+  res.render('cliente/showFactura');
+});
+
 router.post("/add", async (req, res) => {
   try {
     const { nombre, nit, telefono, direccion } = req.body;
