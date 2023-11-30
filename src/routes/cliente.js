@@ -290,6 +290,7 @@ router.post("/addFactura/:row", async (req, res) => {
           ID: productosFiltrados[i].ID,
           CANTIDAD: productosFiltrados[i].CANTIDAD,
           ID_FACTURA: id_factura[0].id_factura, // Asegúrate de extraer el valor correcto de id_factura
+          DIFERENCIA: productosFiltrados[i].DIFERENCIA
         });
       }
 
@@ -301,6 +302,15 @@ router.post("/addFactura/:row", async (req, res) => {
             productosPedido[i].ID,
             productosPedido[i].ID_FACTURA,
           ]
+        );
+
+        const updatePedido = await pool.query(
+          "UPDATE producto SET cantidad = ? WHERE id_producto = ?",
+          [
+            productosPedido[i].DIFERENCIA,
+            productosPedido[i].ID
+          ]
+          
         );
       }
       console.log("productosFiltrados", productosFiltrados);
