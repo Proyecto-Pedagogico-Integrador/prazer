@@ -1,88 +1,91 @@
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
     <link rel="stylesheet" href="/img/styles/producto.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 <body>
-<div class="container p-4">
-    <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-
-        <div class="container">
-            <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
-                <a class="btn btn-outline-success" href="/producto/add">
-                    <span class="icon text-dark-50">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                    <span class="text"></span>
-                </a>
-            </span>
-
-            <h3 style="display: inline-block; margin-left: 40%">Productos</h3>
-        </div>
-        <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-            <thead class="bg-dark text-white">
-                <tr class="text-center">
-                    <th>CÓDIGO</th>
-                    <th>NOMBRE</th>
-                    <th>PRECIO</th>
-                    <th>PESO</th>
-                    <th>CANTIDAD</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody >
-                {{#each producto}}
-                <tr style="text-align: center;">
-                    <td>{{id_producto}}</td>
-                    <td>{{nombre}}</td>
-                    <td>{{precio}}</td>
-                    <td>{{peso}}</td>
-                    <td>{{cantidad}}</td>
-                    <td class="text-center">
-
-                        <span class="text" tabindex="0" data-placement="top" title="Editar">
-                            <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
-                                <span class="icon text-dark-50">
-                                    <i class="fas fa-pen"></i>
-                                </span>
-                                <span class="text"></span>
-                            </a>
+    <div class="container p-4">
+        <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
+            <div class="container">
+                <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
+                    <a class="btn btn-outline-success" href="/producto/add">
+                        <span class="icon text-dark-50">
+                            <i class="fas fa-plus"></i>
                         </span>
-                        <span class="text" tabindex="0" data-placement="top" title="Eliminar">
-                            <a class="btn btn-outline-danger"
-                                href="javascript:EliminarProducto({{id_producto}})">
-                                <span class="icon text-dark-50">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                                <span class="text"></span>
-                            </a>
-                        </span>
-                </tr>
-                {{else}}
-        <div class="col-md-4 mx-auto">
-            <div class="card card-body text-center">
-                <p>No hay productos por el momento :C</p>
-                <a href="/producto/add">Crea Uno!</a>
+                        <span class="text"></span>
+                    </a>
+                </span>
+                <h3 style="display: inline-block; margin-left: 40%">Productos</h3>
+            </div>
+            <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
+                <thead class="bg-dark text-white">
+                    <tr class="text-center">
+                        <th>CÓDIGO</th>
+                        <th>NOMBRE</th>
+                        <th>PRECIO</th>
+                        <th>PESO</th>
+                        <th>CANTIDAD</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each producto}}
+                    <tr style="text-align: center;">
+                        <td>{{id_producto}}</td>
+                        <td>{{nombre}}</td>
+                        <td>{{precio}}</td>
+                        <td>{{peso}}</td>
+                        <td>{{cantidad}}</td>
+                        <td class="text-center">
+                            <span class="text" tabindex="0" data-placement="top" title="Editar">
+                                <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
+                                    <span class="icon text-dark-50">
+                                        <i class="fas fa-pen"></i>
+                                    </span>
+                                    <span class="text"></span>
+                                </a>
+                            </span>
+                            <span class="text" tabindex="0" data-placement="top" title="Eliminar">
+                                <a class="btn btn-outline-danger" href="javascript:EliminarProducto({{id_producto}})">
+                                    <span class="icon text-dark-50">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span class="text"></span>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <div class="col-md-4 mx-auto">
+                        <div class="card card-body text-center">
+                            <p>No hay productos por el momento :C</p>
+                            <a href="/producto/add">Crea Uno!</a>
+                        </div>
+                    </div>
+                    {{/each}}
+                </tbody>
+            </table>
+
+            <div class="pagination" style="display: flex; justify-content: center; align-items: center;">
+                {{#each pages}}
+                {{#if (eq this ../currentPage)}}
+                     <button class="btn btn-info">{{this}}</button>
+                 {{else}}
+                    <button class="btn btn-outline-info" onclick="window.location.href='/producto/{{this}}'" aria-label="Page {{this}}">
+                 {{this}}
+                    </button>
+                {{/if}}
+                {{/each}}
             </div>
         </div>
-        {{/each}}
-            </tbody>
-        </table>
-
-        
-
     </div>
-</div>
 </body>
-
 <script>
-    $(document).ready(function () {
-        var table = $('#tabla').DataTable({
-        });
-    });
-
     function EliminarProducto(id_producto) {
-         Swal.fire({
+        Swal.fire({
             title: '¿Estás seguro?',
             text: "No podrás revertir esto.",
             icon: 'warning',
@@ -95,5 +98,9 @@
                 window.location = "/producto/delete/" + id_producto;
             }
         });
-    }   
-</script>
+    }       
+    </script>
+
+    
+
+

@@ -21,19 +21,19 @@
                     <form action="/producto/add" method="POST">
                         <div class="form-group">
                             <input type="text" name="nombre" class="form-control" placeholder="Nombre" autofocus
-                            onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32"  required>
+                          onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32"  required>
                         </div>
                         <div class="form-group">
                             <input type="number" name="precio" class="form-control" placeholder="Precio" min="1"
-                            required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
                             <input type="number" name="peso" class="form-control" placeholder="Peso" min="1"
-                            required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
                             <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="1"
-                            required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success btn-block">

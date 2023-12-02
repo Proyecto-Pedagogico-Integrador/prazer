@@ -9,28 +9,34 @@ const flash = require('connect-flash');
 const MySQLStore = require('express-mysql-session')(session);
 const bodyParser = require('body-parser');
 
-
 const { database } = require('./keys');
 
 // Intializations
 const app = express();
 require('./lib/passport');
 
+// Configuración helper "eq" para Handlebars
+const hbs = exphbs.create({
+  defaultLayout: 'main',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir: path.join(__dirname, 'views/partials'),
+  extname: '.hbs',
+  helpers: {
+    eq: function (a, b) {
+      return a === b;
+    }
+  }
+});
+
 // Settings
 app.set('port', process.env.PORT || 4000);
 app.set('views', path.join(__dirname, 'views'));
-app.engine('.hbs', exphbs({
-  defaultLayout: 'main',
-  layoutsDir: path.join(app.get('views'), 'layouts'),
-  partialsDir: path.join(app.get('views'), 'partials'),
-  extname: '.hbs',
-  helpers: require('./lib/handlebars')
-}))
+app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 
 // Middlewares
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(session({
@@ -59,7 +65,6 @@ app.use('/links', require('./routes/links'));
 app.use('/producto', require('./routes/producto'));
 app.use('/cliente', require('./routes/cliente'));
 app.use('/inicio', require('./routes/index'));
-
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

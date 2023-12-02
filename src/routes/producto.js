@@ -37,10 +37,30 @@ router.post("/add", async (req, res) => {
     }
 })
 
+router.get('/:page?', async (req, res) => {
+    try {
+        const limit = 5;
+        const currentPage = req.params.page ? parseInt(req.params.page) : 1;
+        const offset = (currentPage - 1) * limit;
 
-router.get('/', isLoggedIn, async (req, res) => {
-    const producto = await pool.query('SELECT * FROM producto');
-    res.render('producto/list', { producto });
+        const [results, itemCount] = await Promise.all([
+            pool.query('SELECT * FROM producto LIMIT ? OFFSET ?', [limit, offset]),
+            pool.query('SELECT COUNT(*) as itemCount FROM producto')
+        ]);
+
+        const pageCount = Math.ceil(itemCount[0].itemCount / limit);
+
+        res.render('producto/list', {
+            producto: results,
+            pageCount,
+            itemCount: itemCount[0].itemCount,
+            currentPage,
+            pages: Array.from({ length: pageCount }, (_, i) => i + 1)
+        });
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
 });
 
 router.get('/delete/:id_producto', async (req, res) => {
