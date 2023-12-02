@@ -19,27 +19,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {{#each cantidadMaxima}}
                     <tr style="text-align: center;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
+                        <td>{{nombre}}</td>
+                        <td>{{atributo}}</td>
+                        <td>{{tipo}}</td>
                     </tr>
+                    {{/each}}
+                    {{#each precioMayor}}
                     <tr style="text-align: center;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
+                        <td>{{nombre}}</td>
+                        <td>{{atributo}}</td>
+                        <td>{{tipo}}</td>
                     </tr>
+                    {{/each}}
+                    {{#each cantidadMinima}}
                     <tr style="text-align: center;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
+                        <td>{{nombre}}</td>
+                        <td>{{atributo}}</td>
+                        <td>{{tipo}}</td>
                     </tr>
+                    {{/each}}
+                    {{#each precioMenor}}
                     <tr style="text-align: center;">
-                        <td>1</td>
-                        <td>2</td>
-                        <td>3</td>
+                        <td>{{nombre}}</td>
+                        <td>{{atributo}}</td>
+                        <td>{{tipo}}</td>
                     </tr>
+                    {{/each}}
                     
                 </tbody>
             </table>  
