@@ -45,17 +45,19 @@
             <td colspan="2" rowspan="2" style="text-align: center;"><b>INDUSTRIAS ALIMENTICIAS PRAZER</b></td>
 			<td colspan="4"><b>CLIENTE</b></td>
 		</tr>
+		{{#each cliente}}
 		<tr>
-			<td colspan="4">#nombreCliente</td>
+			<td colspan="4">{{nombre}}</td>
 		</tr>
 		<tr>
 			<td colspan="4"><b>NIT CLIENTE</b></td>
 			<td colspan="4"><b>DIRECCIÓN</b></td>
 		</tr>
 		<tr>
-			<td colspan="4">#nitCliente</td>
-			<td colspan="4">#direccionCliente</td>
+			<td colspan="4">{{nit}}</td>
+			<td colspan="4">{{direccion}}</td>
 		</tr>
+		{{/each}}
 		<tr>
 			<td colspan="8"></td>
 		</tr>
@@ -66,20 +68,26 @@
 			<td><b>PRECIO UNITARIO</b></td>
 			<td><b>SUBTOTAL</b></td>
 		</tr>
+		{{#each productosList}}
 		<tr>
-			<td></td>
-			<td colspan="4"></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			
+			<td>{{id_producto}}</td>
+			<td colspan="4">{{nombre}}</td>
+			<td>{{cantidad_producto}}</td>
+			<td>{{precio}}</td>
+			<td>{{subtotal}}</td>
+			
 		</tr>
+		{{/each}}
 		<tr>
 			<td colspan="8"></td>
 		</tr>
 		<tr>
 			<td colspan="5"><b>Observaciones</b></td>
 			<td colspan="2"><b>TOTAL</b></td>
-			<td>#totalFactura</td>
+			{{#each total}}
+			<td>{{total}}</td>
+			{{/each}}
 		</tr>
 		<tr>
 			<td></td>

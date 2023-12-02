@@ -8,9 +8,9 @@ router.get("/add", (req, res) => {
   res.render("cliente/add");
 });
 
-router.get('/showFactura', (req, res) => {
-  res.render('cliente/showFactura');
-});
+// router.get('/showFactura', (req, res) => {
+//   res.render('cliente/showFactura');
+// });
 
 router.post("/add", async (req, res) => {
   try {
@@ -330,6 +330,74 @@ router.post("/addFactura/:row", async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error interno del servidor");
+  }
+});
+
+router.get("/showFactura/:id_factura", async (req, res) => {
+  try {
+    const { id_factura } = req.params;
+    const cliente = await pool.query(
+      ` SELECT distinct
+          B.* 
+        FROM 
+          factura AS A 
+        LEFT JOIN 
+          cliente B 
+            ON A.id_cliente = B.id_cliente 
+        WHERE 
+          A.id_factura = ?
+        limit 1`,
+      [id_factura]
+    );
+    console.log(cliente);
+    let row = cliente[0].id_cliente
+    console.log(row)
+    const productosList = await pool.query(
+      `SELECT 
+          b.id_producto,
+          c.nombre,
+          b.cantidad_producto,
+          c.precio,
+          (b.cantidad_producto*c.precio) as subtotal
+      FROM 
+        factura AS A
+      LEFT JOIN 
+        pedido_producto AS B
+          ON A.id_factura = B.id_factura
+      INNER JOIN 
+        producto AS C
+          ON B.id_producto = C.id_producto 
+      WHERE A.id_factura = ${id_factura}`);
+
+      const total = await pool.query(
+        `WITH base as 
+          ( SELECT 
+            b.id_producto, 
+            c.nombre, 
+            b.cantidad_producto, 
+            c.precio,
+            (b.cantidad_producto*c.precio) as subtotal 
+            FROM 
+              factura AS A 
+            LEFT JOIN 
+              pedido_producto AS B 
+                ON A.id_factura = B.id_factura 
+            INNER JOIN 
+              producto AS C 
+                ON B.id_producto = C.id_producto 
+            WHERE A.id_factura = ${id_factura}
+          ) 
+            SELECT 
+              SUM(subtotal) as total
+            from base`
+      )
+      console.log(productosList);
+      console.log(total)
+    res.render(`cliente/showFactura`, { cliente, productosList, total, row});
+  } catch (error) {
+    // Maneja el error aquí
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
   }
 });
 
