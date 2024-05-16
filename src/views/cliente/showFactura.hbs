@@ -1,111 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resumen</title>
   <link rel="stylesheet" href="/img/styles/resumen.css">
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css"
-  />
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
-  ></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
-
 <body>
-
-
-<span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
-            <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
-                <span class="icon text-dark-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text"></span>
-            </a>         
-</span>
-        
-        
-      
-     
-    
-        
-             
-            <div style="text-align: center;">
-                
-            </div>
-          
-
-        
-
-        <table border="5" align="center">
-	<tbody>
-		<tr>
-			<td colspan="2" rowspan="2" style="text-align: center;">  <img
-              src="/img/img/prazer.png"
-              alt="Logo"
-              width="130" height="130"
-            />  </td>
-            <td colspan="2" rowspan="2" style="text-align: center;"><b>INDUSTRIAS ALIMENTICIAS PRAZER</b></td>
-			<td colspan="4"><b>CLIENTE</b></td>
-		</tr>
-		{{#each cliente}}
-		<tr>
-			<td colspan="4">{{nombre}}</td>
-		</tr>
-		<tr>
-			<td colspan="4"><b>NIT CLIENTE</b></td>
-			<td colspan="4"><b>DIRECCIÓN</b></td>
-		</tr>
-		<tr>
-			<td colspan="4">{{nit}}</td>
-			<td colspan="4">{{direccion}}</td>
-		</tr>
-		{{/each}}
-		<tr>
-			<td colspan="8"></td>
-		</tr>
-		<tr>
-			<td><b>ID PRODUCTO</b></td>
-			<td colspan="4"><b>PRODUCTO</b></td>
-			<td><b>CANTIDAD</b></td>
-			<td><b>PRECIO UNITARIO</b></td>
-			<td><b>SUBTOTAL</b></td>
-		</tr>
-		{{#each productosList}}
-		<tr>
-			
-			<td>{{id_producto}}</td>
-			<td colspan="4">{{nombre}}</td>
-			<td>{{cantidad_producto}}</td>
-			<td>{{precio}}</td>
-			<td>{{subtotal}}</td>
-			
-		</tr>
-		{{/each}}
-		<tr>
-			<td colspan="8"></td>
-		</tr>
-		<tr>
-			<td colspan="5"><b>Observaciones</b></td>
-			<td colspan="2"><b>TOTAL</b></td>
-			{{#each total}}
-			<td>{{total}}</td>
-			{{/each}}
-		</tr>
-		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-	</tbody>
-</table>
-<i type="button" class="printbutton fas fa-2x fa-print" style="float: right; margin-right: 120px; margin-top: 30px;"></i>
-
+  <div class="container p-4">
+    <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
+      <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
+        <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
+          <span class="icon text-dark-50">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span class="text"></span>
+        </a>         
+      </span>
+      <div class="table-container">
+        <table class="resumen-table">
+          <tbody>
+            <tr>
+              <td colspan="2" rowspan="2" style="text-align: center;">
+                <img src="/img/img/prazer.png" alt="Logo" width="130" height="130">
+              </td>
+              <td colspan="2" rowspan="2" style="text-align: center;"><b>INDUSTRIAS ALIMENTICIAS PRAZER</b></td>
+              <td colspan="4"><b>CLIENTE</b></td>
+            </tr>
+            {{#each cliente}}
+            <tr>
+              <td colspan="4">{{nombre}}</td>
+            </tr>
+            <tr>
+              <td colspan="4"><b>NIT CLIENTE</b></td>
+              <td colspan="4"><b>DIRECCIÓN</b></td>
+            </tr>
+            <tr>
+              <td colspan="4">{{nit}}</td>
+              <td colspan="4">{{direccion}}</td>
+            </tr>
+            {{/each}}
+            <tr>
+              <td colspan="8"></td>
+            </tr>
+            <tr>
+              <td><b>ID PRODUCTO</b></td>
+              <td colspan="4"><b>PRODUCTO</b></td>
+              <td><b>CANTIDAD</b></td>
+              <td><b>PRECIO UNITARIO</b></td>
+              <td><b>SUBTOTAL</b></td>
+            </tr>
+            {{#each productosList}}
+            <tr>
+              <td>{{id_producto}}</td>
+              <td colspan="4">{{nombre}}</td>
+              <td>{{cantidad_producto}}</td>
+              <td>{{precio}}</td>
+              <td>{{subtotal}}</td>
+            </tr>
+            {{/each}}
+            <tr>
+              <td colspan="8"></td>
+            </tr>
+            <tr>
+              <td colspan="5"><b>Observaciones</b></td>
+              <td colspan="2"><b>TOTAL</b></td>
+              {{#each total}}
+              <td>{{total}}</td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <i type="button" class="printbutton fas fa-2x fa-print"></i>
+    </div>
+  </div>
 </body>
-
-
 <script>
     document.querySelectorAll('.printbutton').forEach(function(element) {
     element.addEventListener('click', function() {
@@ -113,3 +95,4 @@
     });
 });
 </script>
+</html>

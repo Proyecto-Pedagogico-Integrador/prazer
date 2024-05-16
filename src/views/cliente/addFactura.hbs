@@ -1,101 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generar Pedido</title>
   <link rel="stylesheet" href="/img/styles/pedido.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css"
-  />
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
-  ></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
-
 <body>
 
   <div class="container p-4">
-    <div
-      class="container2 mt-4 p-3 mb-4 bg-body rounded"
-      style="margin-left: auto; margin-right: auto;"
-    >
-<span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
-            <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
-                <span class="icon text-dark-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text"></span>
-            </a>
-            
-        </span>
-
-        
-        
+    <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
       <form action="/cliente/addFactura/{{row}}" method="POST">
-      <h3 style="text-align: center;">Generar Pedido</h3>
-      <br>
-        <table class="table">
-          <thead>
-            <tr class="text-center">
-              <th>PRODUCTO</th>
-              <th>DISPONIBLE</th>
-              <th>PRECIO</th>
-              <th>CANTIDAD</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each productosList}}
+      <div class="btn-container">
+          <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
+            <span class="icon text-dark-50">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+          </a>
+        </div>
+      
+        <h3 style="text-align: center;">Generar Pedido</h3>
+        <br>
+        
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
               <tr class="text-center">
+                <th>PRODUCTO</th>
+                <th>DISPONIBLE</th>
+                <th>PRECIO</th>
+                <th>CANTIDAD</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each productosList}}
+              <tr class="text-center">
+                <td>{{nombre}}</td>
+                <td>{{cantidad}}</td>
+                <td>{{precio}}</td>
                 <td>
-                  <input
-                    type="text"
-                    readonly="»readonly»"
-                    name="nombreProducto"
-                    value="{{nombre}}"
-                  />
+                  <input type="number" name="cantidadProductosSeleccionados" value="0" min="0" />
                 </td>
                 <td>
-                  <input
-                    type="number"
-                    readonly="»readonly»"
-                    name="cantidadBD"
-                    value="{{cantidad}}"
-                    min="0"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    readonly="»readonly»"
-                    name="precio"
-                    value="{{precio}}"
-                    min="0"
-                  /></td>
-                <td>
-                  <input
-                    type="number"
-                    name="cantidadProductosSeleccionados"
-                    value="0"
-                    min="0"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    name="productosSeleccionados"
-                    style="display:none;"
-                    value="{{id_producto}}"
-                    checked
-                  />
+                  <input type="checkbox" name="productosSeleccionados" style="display:none;" value="{{id_producto}}" checked />
                 </td>
               </tr>
-            {{/each}}
-          </tbody>
-        </table>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
         <div class="btn-container">
           <input class="btn btn-success btn-lg" type="submit" value="Enviar" />
         </div>
-
       </form>
-
     </div>
   </div>
 
 </body>
+</html>

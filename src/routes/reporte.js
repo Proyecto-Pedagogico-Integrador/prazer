@@ -51,4 +51,20 @@ router.get('/', async (req, res) => {
     
   });
 
+  router.get("/listFacturaReporte", isLoggedIn, async (req, res) => {
+    const fechaConsulta = req.query.fecha; // Obtener la fecha del query string
+  
+    try {
+      const factura = await pool.query(
+        "SELECT factura.id_factura, cliente.nombre, factura.fecha_factura, factura.iva, factura.total FROM factura INNER JOIN cliente WHERE fecha_factura BETWEEN ? AND ?",
+        [fechaConsulta + ' 00:00:00', fechaConsulta + ' 23:59:59']
+      );
+  
+      res.render("reporte/listFacturaReporte", { factura });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error interno del servidor");
+    }
+  });
+
 module.exports = router;

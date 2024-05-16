@@ -22,3 +22,15 @@ body {
 .card-body{
   background-color: #edead1;
 }
+
+@media (max-width: 768px) {
+  .table-responsive {
+      width: 100%;
+      margin-bottom: 15px;
+      overflow-x: auto;
+      display: block;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+}

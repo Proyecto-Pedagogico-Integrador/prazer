@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const helpers = {};
+const Handlebars = require('handlebars');
 
 helpers.encryptPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
@@ -15,5 +16,12 @@ helpers.matchPassword = async (password, savedPassword) => {
     console.log(e)
   }
 };
+
+Handlebars.registerHelper('formatDate', function(date) {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+  return date.toLocaleDateString('es-ES');
+});
 
 module.exports = helpers;

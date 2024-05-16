@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informes</title>
-    <link rel="stylesheet" href="/img/styles/informes.css">
+    <link rel="stylesheet" href="/img/styles/reporte.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
@@ -50,6 +50,38 @@
                     
                 </tbody>
             </table>  
+            <br>
+            <div class="container mt-5">
+
+    <form action="/listFacturaReporte" method="GET">
+  <label for="fecha">Selecciona una fecha:</label>
+  <input type="date" id="fecha" name="fecha">
+  <button type="submit">Buscar</button>
+</form>
+
+    <br>
+            <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
+  <thead class="bg-dark text-white">
+    <tr class="text-center">
+      <th>ID FACTURA</th>
+      <th>CLIENTE</th>
+      <th>FECHA</th>
+      <th>IVA</th>
+      <th>TOTAL</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each factura}}
+    <tr style="text-align: center;">
+      <td>{{id_factura}}</td>
+      <td>{{nombre}}</td>
+      <td>{{fecha_factura}}</td>
+      <td>{{iva}}</td>
+      <td>{{total}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
         </div>
     </div>
 </body>
