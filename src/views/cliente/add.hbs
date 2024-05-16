@@ -18,24 +18,24 @@
                 <div class="card-body shadow-lg">
                     <h3 style="text-align: center;">Agregar Cliente</h3>
                     <br>
-                    <form action="/cliente/add" method="POST">
+                    <form id="clienteForm" action="/cliente/add" method="POST">
                         <div class="form-group">
-                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" autofocus required
-                               onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32">
+                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre"
+                                autofocus required>
+                            <span id="nombreMensaje"></span>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="nit" class="form-control" placeholder="Nit" required
-                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 45">
+                            <input type="text" name="nit" id="nit" class="form-control" placeholder="Nit" required>
+                            <span id="nitMensaje"></span>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="telefono" class="form-control" placeholder="Telefono" required
-                             onkeypress="return (event.charCode >= 48 && event.charCode <= 57)">
+                            <input type="text" name="telefono" class="form-control" placeholder="Telefono" required>
                         </div>
                         <div class="form-group">
                             <input type="text" name="direccion" class="form-control" placeholder="Dirección" required>
                         </div>
                         <div class="form-group">
-                            <button class="btn btn-success btn-block">
+                            <button id="guardarBtn" class="btn btn-success btn-block" disabled>
                                 Guardar
                             </button>
                         </div>
@@ -46,3 +46,80 @@
 
     </div>
 </div>
+
+<script>
+    async function validarNombre() {
+        const nombre = document.getElementById('nombre').value;
+
+        // Si el campo está vacío, no se muestra ningún mensaje
+        if (!nombre.trim()) {
+            document.getElementById('nombreMensaje').innerText = '';
+            return;
+        }
+
+        // Realiza una solicitud AJAX al servidor para verificar el nombre
+        const response = await fetch('/cliente/validarNombre', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nombre })
+        });
+
+        const data = await response.json();
+
+        // Muestra el mensaje de validación junto al campo de nombre
+        const nombreMensaje = document.getElementById('nombreMensaje');
+        if (data.existe) {
+            nombreMensaje.innerText = 'El nombre ya está en uso';
+        } else {
+            nombreMensaje.innerText = 'Vas bien';
+        }
+
+        habilitarODeshabilitarBotonGuardar();
+    }
+
+    async function validarNit() {
+        const nit = document.getElementById('nit').value;
+
+        // Si el campo está vacío, no se muestra ningún mensaje
+        if (!nit.trim()) {
+            document.getElementById('nitMensaje').innerText = '';
+            return;
+        }
+
+        // Realiza una solicitud AJAX al servidor para verificar el NIT
+        const response = await fetch('/cliente/validarNit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ nit })
+        });
+
+        const data = await response.json();
+
+        // Muestra el mensaje de validación junto al campo de NIT
+        const nitMensaje = document.getElementById('nitMensaje');
+        if (data.existe) {
+            nitMensaje.innerText = 'El NIT ya se encuentra registrado';
+        } else {
+            nitMensaje.innerText = 'Vas bien';
+        }
+
+        habilitarODeshabilitarBotonGuardar();
+    }
+
+    function habilitarODeshabilitarBotonGuardar() {
+        const nombreValido = document.getElementById('nombreMensaje').innerText === 'Vas bien';
+        const nitValido = document.getElementById('nitMensaje').innerText === 'Vas bien';
+        document.getElementById('guardarBtn').disabled = !(nombreValido && nitValido);
+    }
+
+    // Llama a las funciones de validación al cargar la página
+    window.onload = function () {
+        // Agrega eventos de input a los campos de nombre y NIT
+        document.getElementById('nombre').addEventListener('input', validarNombre);
+        document.getElementById('nit').addEventListener('input', validarNit);
+    };
+</script>

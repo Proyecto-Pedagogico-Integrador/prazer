@@ -8,6 +8,7 @@ router.get("/add", (req, res) => {
   res.render("cliente/add");
 });
 
+
 router.post("/validarNombre", async (req, res) => {
   try {
     const { nombre } = req.body;
@@ -85,19 +86,19 @@ router.get("/:page?", async (req, res) => {
   }
 });
 
-router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
+router.get("/delete/:id_cliente",isLoggedIn, async (req, res) => {
   const { id_cliente } = req.params;
   const nombre = await pool.query(
     "SELECT nombre FROM cliente WHERE id_cliente = ?",
     [id_cliente]
   );
-  console.log(nombre);
+  console.log(nombre)
   await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
   req.flash("success", `El cliente ${nombre} ha sido eliminado exitosamente`);
   res.redirect("/cliente");
 });
 
-router.get("/edit/:id", isLoggedIn, async (req, res) => {
+router.get("/edit/:id",isLoggedIn, async (req, res) => {
   const { id } = req.params;
   const cliente = await pool.query(
     "SELECT * FROM cliente WHERE id_cliente = ?",
@@ -107,7 +108,7 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
   res.render("cliente/edit", { cliente: cliente[0] });
 });
 
-router.post("/edit/:id", isLoggedIn, async (req, res) => {
+router.post("/edit/:id",isLoggedIn, async (req, res) => {
   const { id } = req.params;
   const { nombre, nit, telefono, direccion } = req.body;
   const newCliente = {
@@ -185,105 +186,159 @@ router.post("/addFactura/:row", async (req, res) => {
     } = req.body;
 
     const productosFiltrados = [];
+    const productosNoValidos = [];
     const productosPedido = [];
-
+    inicio = 0;
     console.log(productosSeleccionados, productosSeleccionados.length);
+    const productosSeleccionadosArray = Array.isArray(productosSeleccionados)
+      ? productosSeleccionados.map(String)
+      : [String(productosSeleccionados)];
+    console.log(
+      productosSeleccionados,
+      productosSeleccionados.length,
+      productosSeleccionadosArray,
+      productosSeleccionadosArray.length
+    );
+    if (productosSeleccionados !== undefined) {
+      for (let i = 0; i < productosSeleccionados.length; i++) {
+        inicio = inicio + parseInt(cantidadProductosSeleccionados[i]);
+      }
 
-    // Itera sobre los productos seleccionados y sus cantidades
-    for (let i = 0; i < productosSeleccionados.length; i++) {
-      const id_producto = productosSeleccionados[i];
-      const cantidad = parseInt(cantidadProductosSeleccionados[i]);
-      const cantidadDataBase = parseInt(cantidadBD[i]);
-      const precioProducto = parseInt(precio[i]);
-      const diferencia = cantidadDataBase - cantidad;
-      const total = cantidad * precioProducto;
+      if (inicio == 0) {
+        req.flash("message", "No ha enviado productos");
+        return res.redirect("/Cliente");
+      }
 
-      if (cantidad > 0) {
-        productosFiltrados.push({
-          ID: id_producto,
-          CANTIDAD: parseInt(cantidad),
-          CANTIDADDB: parseInt(cantidadDataBase),
-          PRECIO: parseInt(precioProducto),
-          DIFERENCIA: diferencia,
-          TOTAL: parseInt(total),
+      // Itera sobre los productos seleccionados y sus cantidades
+      for (let i = 0; i < productosSeleccionados.length; i++) {
+        const id_producto = productosSeleccionados[i];
+        const cantidad = parseInt(cantidadProductosSeleccionados[i]);
+        const cantidadDataBase = parseInt(cantidadBD[i]);
+        const precioProducto = parseInt(precio[i]);
+        const cantidadNoExcedeDB = cantidad > cantidadDataBase ? false : true;
+        const diferencia = cantidadDataBase - cantidad;
+        const total = cantidad * precioProducto;
+        const nombre = nombreProducto[i];
+
+        if (cantidad > 0 && cantidadNoExcedeDB === true) {
+          productosFiltrados.push({
+            ID: id_producto,
+            CANTIDAD: parseInt(cantidad),
+            CANTIDADDB: parseInt(cantidadDataBase),
+            PRECIO: parseInt(precioProducto),
+            CANTIDAD_EXCEDE_DB: cantidadNoExcedeDB,
+            DIFERENCIA: diferencia,
+            TOTAL: parseInt(total),
+          });
+        } else if (cantidadNoExcedeDB === false) {
+          productosNoValidos.push({
+            ID: id_producto,
+            CANTIDAD: parseInt(cantidad),
+            CANTIDADDB: parseInt(cantidadDataBase),
+            CANTIDAD_EXCEDE_DB: cantidadNoExcedeDB,
+            DIFERENCIA: diferencia,
+            NOMBRE: nombre,
+          });
+        }
+      }
+
+      if (productosNoValidos.length > 0) {
+        let listaNOMBRES = productosNoValidos.map(
+          (producto) => producto.NOMBRE
+        );
+        req.flash(
+          "message",
+          `Lo lamentamos, supera la cantidad de productos disponibles: ${listaNOMBRES}`
+        );
+        return res.redirect("/Cliente");
+      }
+
+      const fechaActual = new Date();
+      const formatoFecha = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short",
+      });
+
+      const [
+        { value: month },
+        ,
+        { value: day },
+        ,
+        { value: year },
+        ,
+        { value: hour },
+        ,
+        { value: minute },
+        ,
+        { value: second },
+        ,
+        { value: dayPeriod },
+      ] = formatoFecha.formatToParts(fechaActual);
+
+      const fechaFormateada = `${year}-${month}-${day} ${hour}:${minute}:${second} ${dayPeriod}`;
+      console.log(fechaFormateada);
+      const fechaMySQL = await pool.query(
+        "SELECT DATE_FORMAT(?, '%Y-%m-%d %H:%i:%s') as fecha",
+        [fechaFormateada]
+      );
+      console.log(fechaMySQL);
+
+      const sumaTotal = productosFiltrados.reduce(
+        (total, producto) => total + producto.TOTAL,
+        0
+      );
+
+      let iva = sumaTotal * 0.19;
+
+      const insertFactura = await pool.query(
+        "INSERT INTO factura (total, iva, fecha_factura, factura_oficial, id_empleado, id_cliente) VALUES (?, ?, ?, 'si', ?, ?)",
+        [sumaTotal, iva, fechaMySQL[0].fecha, req.user.id, row]
+      );
+      const id_factura = await pool.query(
+        "select id_factura from factura where fecha_factura = ? and id_empleado = ? and id_cliente = ?",
+        [fechaMySQL[0].fecha, req.user.id, row]
+      );
+      console.log(id_factura);
+
+      for (let i = 0; i < productosFiltrados.length; i++) {
+        productosPedido.push({
+          ID: productosFiltrados[i].ID,
+          CANTIDAD: productosFiltrados[i].CANTIDAD,
+          ID_FACTURA: id_factura[0].id_factura, // Asegúrate de extraer el valor correcto de id_factura
+          DIFERENCIA: productosFiltrados[i].DIFERENCIA,
         });
       }
+
+      for (let i = 0; i < productosPedido.length; i++) {
+        const insertPedido = await pool.query(
+          "INSERT INTO pedido_producto (cantidad_producto, id_producto, id_factura) VALUES (?, ?, ?)",
+          [
+            productosPedido[i].CANTIDAD,
+            productosPedido[i].ID,
+            productosPedido[i].ID_FACTURA,
+          ]
+        );
+
+        const updatePedido = await pool.query(
+          "UPDATE producto SET cantidad = ? WHERE id_producto = ?",
+          [productosPedido[i].DIFERENCIA, productosPedido[i].ID]
+        );
+      }
+      console.log("productosFiltrados", productosFiltrados);
+      console.log("productosNoValidos", productosNoValidos);
+      console.log("productosPedido", productosPedido);
+      req.flash("success", "Se ha recibido correctamente tu pedido");
+      return res.redirect("/Cliente");
+      console.log("Comienzo del buffer");
+    } else {
+      req.flash("message", "No ha enviado productos");
+      return res.redirect("/Cliente");
     }
-    console.log(productosFiltrados)
-    
-    const fechaActual = new Date();
-    const formatoFecha = new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZoneName: "short",
-    });
-
-    const [
-      { value: month },
-      { value: day },
-      { value: year },
-      { value: hour },
-      { value: minute },
-      { value: second },
-      { value: dayPeriod },
-    ] = formatoFecha.formatToParts(fechaActual);
-
-    const fechaFormateada = `${year}-${month}-${day} ${hour}:${minute}:${second} ${dayPeriod}`;
-    console.log(fechaFormateada);
-    const fechaMySQL = await pool.query(
-      "SELECT DATE_FORMAT(?, '%Y-%m-%d %H:%i:%s') as fecha",
-      [fechaFormateada]
-    );
-    console.log(fechaMySQL);
-
-    const sumaTotal = productosFiltrados.reduce(
-      (total, producto) => total + producto.TOTAL,
-      0
-    );
-
-    let iva = sumaTotal * 0.19;
-
-    const insertFactura = await pool.query(
-      "INSERT INTO factura (total, iva, fecha_factura, factura_oficial, id_empleado, id_cliente) VALUES (?, ?, ?, 'si', ?, ?)",
-      [sumaTotal, iva, fechaMySQL[0].fecha, req.user.id, row]
-    );
-    const id_factura = await pool.query(
-      "select id_factura from factura where fecha_factura = ? and id_empleado = ? and id_cliente = ?",
-      [fechaMySQL[0].fecha, req.user.id, row]
-    );
-
-    for (let i = 0; i < productosFiltrados.length; i++) {
-      productosPedido.push({
-        ID: productosFiltrados[i].ID,
-        CANTIDAD: productosFiltrados[i].CANTIDAD,
-        ID_FACTURA: id_factura[0].id_factura, // Asegúrate de extraer el valor correcto de id_factura
-        DIFERENCIA: productosFiltrados[i].DIFERENCIA,
-      });
-    }
-
-    for (let i = 0; i < productosPedido.length; i++) {
-      const insertPedido = await pool.query(
-        "INSERT INTO pedido_producto (cantidad_producto, id_producto, id_factura) VALUES (?, ?, ?)",
-        [
-          productosPedido[i].CANTIDAD,
-          productosPedido[i].ID,
-          productosPedido[i].ID_FACTURA,
-        ]
-      );
-
-      const updatePedido = await pool.query(
-        "UPDATE producto SET cantidad = ? WHERE id_producto = ?",
-        [productosPedido[i].DIFERENCIA, productosPedido[i].ID]
-      );
-    }
-    console.log("productosFiltrados", productosFiltrados);
-    console.log("productosPedido", productosPedido);
-    req.flash("success", "Se ha recibido correctamente tu pedido");
-    return res.redirect("/Cliente");
   } catch (error) {
     console.error(error);
     return res.status(500).send("Error interno del servidor");
