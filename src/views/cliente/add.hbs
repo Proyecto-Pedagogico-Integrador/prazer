@@ -1,6 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Cliente</title>
     <link rel="stylesheet" href="/img/styles/cliente.css">
+    <style>
+        .container.p-4 {
+            padding: 2rem !important; 
+            margin: 0 auto !important; 
+            max-width: 100%; 
+        }
+        
+        .card {
+            margin: 0 auto; 
+            max-width: 400px;
+        }
+    </style>
 </head>
+<body>
 <div class="container p-4">
     <div class="row" style="position: relative;">
 
@@ -98,7 +116,7 @@
         });
 
         const data = await response.json();
-
+        // Realizar ajuste de los mensajes
         // Muestra el mensaje de validación junto al campo de NIT
         const nitMensaje = document.getElementById('nitMensaje');
         if (data.existe) {
@@ -109,7 +127,7 @@
 
         habilitarODeshabilitarBotonGuardar();
     }
-
+    // Tener en cuenta que si el mensaje que se cambie, en estos momentos el vas bien, se debe actualizar en todas partes como en la linea 94,125,132 y 133
     function habilitarODeshabilitarBotonGuardar() {
         const nombreValido = document.getElementById('nombreMensaje').innerText === 'Vas bien';
         const nitValido = document.getElementById('nitMensaje').innerText === 'Vas bien';

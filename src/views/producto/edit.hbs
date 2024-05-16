@@ -1,6 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto</title>
     <link rel="stylesheet" href="/img/styles/producto.css">
+    <style>
+        
+        .container.p-4 {
+            padding: 2rem !important; 
+            margin: 0 auto !important;
+            max-width: 100%;
+        }
+        
+        .card {
+            margin: 0 auto; 
+            max-width: 400px; 
+        }
+    </style>
 </head>
+<body>
 <div class="container p-4">
     <div class="row" style="position: relative;">
 
@@ -20,22 +39,24 @@
                     <br>
                     <form action="/producto/edit/{{producto.id_producto}}" method="POST">
                         <div class="form-group">
-                            <input type="text" name="nombre" class="form-control" placeholder="nombre"
-                                value="{{producto.nombre}}" autofocus
-                                  
-                               onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32"  required>
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" autofocus
+                                value="{{producto.nombre}}" 
+                                onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32"  required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="precio" class="form-control" placeholder="precio" min="1"
-                                value="{{producto.precio}}" onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                            <input type="number" name="precio" class="form-control" placeholder="Precio" min="1"
+                                value="{{producto.precio}}" 
+                                onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="peso" class="form-control" placeholder="peso" min="1"
-                                value="{{producto.peso}}" onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                            <input type="number" name="peso" class="form-control" placeholder="Peso" min="1"
+                                value="{{producto.peso}}" 
+                                onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="cantidad" class="form-control" placeholder="cantidad" min="1"
-                                value="{{producto.cantidad}}" onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                            <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="1"
+                                value="{{producto.cantidad}}" 
+                                onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success btn-block">
@@ -48,3 +69,5 @@
         </div>
     </div>
 </div>
+</body>
+</html>
