@@ -6,10 +6,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
+
 <body>
     <div class="container p-4">
         <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-            
+
             <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
                 <thead class="bg-dark text-white">
                     <tr class="text-center">
@@ -47,46 +48,56 @@
                         <td>{{tipo}}</td>
                     </tr>
                     {{/each}}
-                    
+
                 </tbody>
-            </table>  
+            </table>
             <br>
             <div class="container mt-5">
 
-    <form action="/listFacturaReporte" method="GET">
-  <label for="fecha">Selecciona una fecha:</label>
-  <input type="date" id="fecha" name="fecha">
-  <button type="submit">Buscar</button>
-</form>
+                <form id="formBuscar">
+                    <label for="fecha">Selecciona una fecha:</label>
+                    <input type="date" id="fecha" name="fecha">
+                    <button type="submit">Buscar</button>
+                </form>
 
-    <br>
-            <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
-  <thead class="bg-dark text-white">
-    <tr class="text-center">
-      <th>ID FACTURA</th>
-      <th>CLIENTE</th>
-      <th>FECHA</th>
-      <th>IVA</th>
-      <th>TOTAL</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each factura}}
-    <tr style="text-align: center;">
-      <td>{{id_factura}}</td>
-      <td>{{nombre}}</td>
-      <td>{{fecha_factura}}</td>
-      <td>{{iva}}</td>
-      <td>{{total}}</td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
+
+                <br>
+                <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
+                    <thead class="bg-dark text-white">
+                        <tr class="text-center">
+                            <th>ID FACTURA</th>
+                            <th>CLIENTE</th>
+                            <th>FECHA</th>
+                            <th>IVA</th>
+                            <th>TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each factura}}
+                        <tr style="text-align: center;">
+                            <td>{{id_factura}}</td>
+                            <td>{{nombre}}</td>
+                            <td>{{fecha_factura}}</td>
+                            <td>{{iva}}</td>
+                            <td>{{total}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 </body>
+<script>
+    document.getElementById('formBuscar').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Previene el envío predeterminado del formulario
 
+        const fecha = document.getElementById('fecha').value;
+        console.log(`fecha front ${fecha}`)
+       
 
-    
+        // Realiza cualquier validación adicional aquí
 
-
+        // Envía el formulario
+        window.location = '/reporte/listFacturaReporte/' + fecha;
+    });
+</script>

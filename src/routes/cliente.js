@@ -224,11 +224,17 @@ router.post("/addFactura/:row", async (req, res) => {
 
     const [
       { value: month },
+      ,
       { value: day },
+      ,
       { value: year },
+      ,
       { value: hour },
+      ,
       { value: minute },
+      ,
       { value: second },
+      ,
       { value: dayPeriod },
     ] = formatoFecha.formatToParts(fechaActual);
 
