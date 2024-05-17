@@ -38,13 +38,14 @@
                     <br>
                     <form id="clienteForm" action="/cliente/add" method="POST">
                         <div class="form-group">
+                            <span id="nombreMensaje"></span>
                             <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre"
                                 autofocus required>
-                            <span id="nombreMensaje"></span>
+                            
                         </div>
                         <div class="form-group">
-                            <input type="text" name="nit" id="nit" class="form-control" placeholder="Nit" required>
                             <span id="nitMensaje"></span>
+                            <input type="text" name="nit" id="nit" class="form-control" placeholder="Nit" required>
                         </div>
                         <div class="form-group">
                             <input type="text" name="telefono" class="form-control" placeholder="Telefono" required>
@@ -89,9 +90,11 @@
         // Muestra el mensaje de validación junto al campo de nombre
         const nombreMensaje = document.getElementById('nombreMensaje');
         if (data.existe) {
-            nombreMensaje.innerText = 'El nombre ya está en uso';
+            nombreMensaje.innerText = 'Nombre no disponible';
+            nombreMensaje.style.color = 'red';
         } else {
-            nombreMensaje.innerText = 'Vas bien';
+            nombreMensaje.innerText = 'Nombre disponible';
+            nombreMensaje.style.color = 'green';
         }
 
         habilitarODeshabilitarBotonGuardar();
@@ -120,17 +123,19 @@
         // Muestra el mensaje de validación junto al campo de NIT
         const nitMensaje = document.getElementById('nitMensaje');
         if (data.existe) {
-            nitMensaje.innerText = 'El NIT ya se encuentra registrado';
+            nitMensaje.innerText = 'NIT no disponible';
+            nitMensaje.style.color = 'red';
         } else {
-            nitMensaje.innerText = 'Vas bien';
+            nitMensaje.innerText = 'NIT disponible';
+            nitMensaje.style.color = 'green';
         }
 
         habilitarODeshabilitarBotonGuardar();
     }
     // Tener en cuenta que si el mensaje que se cambie, en estos momentos el vas bien, se debe actualizar en todas partes como en la linea 94,125,132 y 133
     function habilitarODeshabilitarBotonGuardar() {
-        const nombreValido = document.getElementById('nombreMensaje').innerText === 'Vas bien';
-        const nitValido = document.getElementById('nitMensaje').innerText === 'Vas bien';
+        const nombreValido = document.getElementById('nombreMensaje').innerText === 'Nombre disponible';
+        const nitValido = document.getElementById('nitMensaje').innerText === 'NIT disponible';
         document.getElementById('guardarBtn').disabled = !(nombreValido && nitValido);
     }
 

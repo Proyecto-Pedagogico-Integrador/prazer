@@ -146,4 +146,19 @@ router.get('/obtenerDatosProducto', async (req, res) => {
     }
 });
 
+router.post("/validarNombre", async (req, res) => {
+    try {
+      const { nombre } = req.body;
+      const validarNombre = await pool.query(
+        `SELECT nombre FROM producto WHERE nombre = ?`,
+        [nombre]
+      );
+  
+      res.json({ existe: validarNombre.length > 0 });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error en el servidor" });
+    }
+  });
+
 module.exports = router;

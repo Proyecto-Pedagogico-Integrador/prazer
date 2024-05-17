@@ -10,54 +10,12 @@
 <body>
     <div class="container p-4">
         <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-
-            <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-                <thead class="bg-dark text-white">
-                    <tr class="text-center">
-                        <th>NOMBRE</th>
-                        <th>ATRIBUTO</th>
-                        <th>TIPO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each cantidadMaxima}}
-                    <tr style="text-align: center;">
-                        <td>{{nombre}}</td>
-                        <td>{{atributo}}</td>
-                        <td>{{tipo}}</td>
-                    </tr>
-                    {{/each}}
-                    {{#each precioMayor}}
-                    <tr style="text-align: center;">
-                        <td>{{nombre}}</td>
-                        <td>{{atributo}}</td>
-                        <td>{{tipo}}</td>
-                    </tr>
-                    {{/each}}
-                    {{#each cantidadMinima}}
-                    <tr style="text-align: center;">
-                        <td>{{nombre}}</td>
-                        <td>{{atributo}}</td>
-                        <td>{{tipo}}</td>
-                    </tr>
-                    {{/each}}
-                    {{#each precioMenor}}
-                    <tr style="text-align: center;">
-                        <td>{{nombre}}</td>
-                        <td>{{atributo}}</td>
-                        <td>{{tipo}}</td>
-                    </tr>
-                    {{/each}}
-
-                </tbody>
-            </table>
-            <br>
+            <h3 style="display: inline-block; margin-left: 35%; margin-top:2%">Reporte de ventas por día</h3>
             <div class="container mt-5">
-
                 <form id="formBuscar">
                     <label for="fecha">Selecciona una fecha:</label>
-                    <input type="date" id="fecha" name="fecha">
-                    <button type="submit">Buscar</button>
+                    <input type="date" id="fecha" name="fecha" max="">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
                 </form>
 
 
@@ -77,12 +35,19 @@
                         <tr style="text-align: center;">
                             <td>{{id_factura}}</td>
                             <td>{{nombre}}</td>
-                            <td>{{fecha_factura}}</td>
+                            <td>{{formatDate fecha_factura}}</td>
                             <td>{{iva}}</td>
-                            <td>{{total}}</td>
+                            <td class="total">{{total}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
+                    <tfoot>
+                        <tr class="text-center">
+                            <td colspan="4" style="text-align: right;"><h5>Total</h5></td>
+                            <td id="footerTotal"><h5 id="sumaTotal"></h5></td>
+                        </tr>
+                    </tfoot>
+                    
                 </table>
             </div>
         </div>
@@ -93,11 +58,34 @@
 
         const fecha = document.getElementById('fecha').value;
         console.log(`fecha front ${fecha}`)
+
+        
        
 
         // Realiza cualquier validación adicional aquí
 
         // Envía el formulario
         window.location = '/reporte/listFacturaReporte/' + fecha;
+
     });
+
+    const fechaInput = document.getElementById('fecha');
+        const fechaActual = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual en formato ISO (YYYY-MM-DD)
+        fechaInput.setAttribute('max', fechaActual);
+    
+    // Obtener todos los elementos de la tabla con la clase 'total'
+  const totales = document.querySelectorAll('.total');
+
+  // Inicializar una variable para almacenar la suma
+  let sumaTotal = 0;
+
+  // Iterar sobre los elementos y sumar los totales
+  totales.forEach(total => {
+      sumaTotal += parseFloat(total.textContent); // Convertir el texto del total a un número flotante y sumarlo
+  });
+
+  // Mostrar la suma total debajo de la tabla
+  const sumaTotalElement = document.getElementById('sumaTotal');
+  sumaTotalElement.textContent = sumaTotal;
+    
 </script>

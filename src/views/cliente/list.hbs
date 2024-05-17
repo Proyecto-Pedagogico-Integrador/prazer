@@ -34,16 +34,6 @@
                         <th>NIT</th>
                         <th>TELEFONO</th>
                         <th>DIRECCIÓN</th>
-                        <th><div class="dropdown">
-  <button style="background-color: rgba(52,58,64,255); border-color: rgba(52,58,64,255); font-weight: bold"   class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Estado
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Todos</a>
-    <a class="dropdown-item" href="#">Activos</a>
-    <a class="dropdown-item" href="#">Inactivos</a>
-  </div>
-</div></th>
                         <th>ACCIONES</th>
                     </tr>
                 </thead>
@@ -55,7 +45,6 @@
                         <td>{{nit}}</td>
                         <td>{{telefono}}</td>
                         <td>{{direccion}}</td>
-                        <td>Prueba</td>
                         <td class="text-center">
                             <div class="btn-group" role="group" aria-label="Acciones" >
                                 <a title="Editar Cliente" class="btn btn-outline-warning" href="/cliente/edit/{{id_cliente}}">
