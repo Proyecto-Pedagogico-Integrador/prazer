@@ -10,11 +10,13 @@
 <body>
     <div class="container p-4">
         <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-            <h3 style="display: inline-block; margin-left: 35%; margin-top:2%">Reporte de ventas por día</h3>
+            <h3 style="display: inline-block; margin-left: 40%; margin-top:2%">Reporte de ventas</h3>
             <div class="container mt-5">
                 <form id="formBuscar">
-                    <label for="fecha">Selecciona una fecha:</label>
-                    <input type="date" id="fecha" name="fecha" max="">
+                    <label for="fecha">Selecciona un rango de fechas:</label>
+                    <br>
+                    <input type="date" id="fechaInicio" name="fechaInicio" max="">
+                    <input type="date" id="fechaFin" name="fechaFin" max="">
                     <button class="btn btn-outline-success" type="submit">Buscar</button>
                 </form>
 
@@ -39,7 +41,13 @@
                             <td>{{iva}}</td>
                             <td class="total">{{total}}</td>
                         </tr>
-                        {{/each}}
+                        {{else}}
+                    <div class="col-md-4 mx-auto">
+                        <div class="card card-body text-center">
+                            <p>No hay facturas registradas en este rango de fechas</p>
+                        </div>
+                    </div>
+                    {{/each}}
                     </tbody>
                     <tfoot>
                         <tr class="text-center">
@@ -47,44 +55,37 @@
                             <td id="footerTotal"><h5 id="sumaTotal"></h5></td>
                         </tr>
                     </tfoot>
-                    
                 </table>
             </div>
         </div>
 </body>
 <script>
     document.getElementById('formBuscar').addEventListener('submit', async function (event) {
-        event.preventDefault(); // Previene el envío predeterminado del formulario
+        event.preventDefault(); 
 
-        const fecha = document.getElementById('fecha').value;
-        console.log(`fecha front ${fecha}`)
+        const fechaInicio = document.getElementById('fechaInicio').value;
+        console.log(`fecha front ${fechaInicio}`)
+        const fechaFin = document.getElementById('fechaFin').value;
+        console.log(`fecha front ${fechaFin}`)
 
-        
-       
-
-        // Realiza cualquier validación adicional aquí
-
-        // Envía el formulario
-        window.location = '/reporte/listFacturaReporte/' + fecha;
+        window.location = '/reporte/listFacturaReporte/' + fechaInicio + '/' + fechaFin;
 
     });
 
-    const fechaInput = document.getElementById('fecha');
-        const fechaActual = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual en formato ISO (YYYY-MM-DD)
-        fechaInput.setAttribute('max', fechaActual);
+    const fechaInput1 = document.getElementById('fechaInicio');
+    const fechaInput2 = document.getElementById('fechaFin');
+        const fechaActual = new Date().toISOString().split('T')[0];
+        fechaInput1.setAttribute('max', fechaActual);
+        fechaInput2.setAttribute('max', fechaActual);
     
-    // Obtener todos los elementos de la tabla con la clase 'total'
   const totales = document.querySelectorAll('.total');
 
-  // Inicializar una variable para almacenar la suma
   let sumaTotal = 0;
 
-  // Iterar sobre los elementos y sumar los totales
   totales.forEach(total => {
-      sumaTotal += parseFloat(total.textContent); // Convertir el texto del total a un número flotante y sumarlo
+      sumaTotal += parseFloat(total.textContent); 
   });
 
-  // Mostrar la suma total debajo de la tabla
   const sumaTotalElement = document.getElementById('sumaTotal');
   sumaTotalElement.textContent = sumaTotal;
     

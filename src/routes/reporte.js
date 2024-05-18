@@ -51,9 +51,10 @@ router.get('/', async (req, res) => {
     
   });
 
-  router.get("/listFacturaReporte/:fecha", isLoggedIn, async (req, res) => {
-    const {fecha} = req.params; // Obtener la fecha del query string
-    console.log(`fecha back ${fecha}`)
+  router.get("/listFacturaReporte/:fechaInicio/:fechaFin", isLoggedIn, async (req, res) => {
+    const {fechaInicio} = req.params;
+    const {fechaFin} = req.params; // Obtener la fecha del query string
+
     try {
       const factura = await pool.query(
         `SELECT 
@@ -66,7 +67,7 @@ router.get('/', async (req, res) => {
         INNER JOIN cliente c
           ON f.id_cliente = c.id_cliente
         WHERE fecha_factura BETWEEN ? AND ?`,
-        [fecha + ' 00:00:00', fecha + ' 23:59:59']
+        [fechaInicio + ' 00:00:00', fechaFin + ' 23:59:59']
       );
   
       const cantidadMaxima = await pool.query(

@@ -38,20 +38,24 @@
                     <br>
                     <form id="productoForm" action="/producto/add" method="POST">
                         <div class="form-group">
+                            <h6 style="text-align: left;">Nombre*</h6>
                             <span id="nombreMensaje"></span>
-                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre"
+                            <input type="text" name="nombre" id="nombre" class="form-control"
                                 autofocus required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="precio" class="form-control" placeholder="Precio" min="1"
+                            <h6 style="text-align: left;">Precio*</h6>
+                            <input type="number" name="precio" class="form-control" min="1"
                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="peso" class="form-control" placeholder="Peso" min="1"
+                            <h6 style="text-align: left;">Peso*</h6>
+                            <input type="number" name="peso" class="form-control" min="1"
                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
-                            <input type="number" name="cantidad" class="form-control" placeholder="Cantidad" min="1"
+                            <h6 style="text-align: left;">Cantidad*</h6>
+                            <input type="number" name="cantidad" class="form-control" min="1"
                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
                         </div>
                         <div class="form-group">
