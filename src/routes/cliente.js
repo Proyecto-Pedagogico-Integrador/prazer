@@ -209,8 +209,8 @@ router.post("/addFactura/:row", async (req, res) => {
         });
       }
     }
-    console.log(productosFiltrados)
-    
+    console.log(productosFiltrados);
+
     const fechaActual = new Date();
     const formatoFecha = new Intl.DateTimeFormat("en-US", {
       year: "numeric",
@@ -252,10 +252,11 @@ router.post("/addFactura/:row", async (req, res) => {
     );
 
     let iva = sumaTotal * 0.19;
+    let total = sumaTotal + iva
 
     const insertFactura = await pool.query(
       "INSERT INTO factura (total, iva, fecha_factura, factura_oficial, id_empleado, id_cliente) VALUES (?, ?, ?, 'si', ?, ?)",
-      [sumaTotal, iva, fechaMySQL[0].fecha, req.user.id, row]
+      [total, iva, fechaMySQL[0].fecha, req.user.id, row]
     );
     const id_factura = await pool.query(
       "select id_factura from factura where fecha_factura = ? and id_empleado = ? and id_cliente = ?",
@@ -286,8 +287,43 @@ router.post("/addFactura/:row", async (req, res) => {
         [productosPedido[i].DIFERENCIA, productosPedido[i].ID]
       );
     }
+
+    const insertDetalleFactura = await pool.query(
+      `INSERT INTO detalle_factura (
+        nombre_cliente,
+        nit,
+        direccion,
+        id_producto,
+        nombre_producto,
+        cantidad,
+        precio_unitario,
+        subtotal,
+        total,
+        id_factura
+    )
+    SELECT
+        c.nombre as nombre_cliente,
+        c.nit,
+        c.direccion,
+        pd.id_producto,
+        p.nombre as nombre_producto,
+        pd.cantidad_producto as cantidad,
+        p.precio as precio_unitario,
+        (pd.cantidad_producto * p.precio) as subtotal,
+        (pd.cantidad_producto * p.precio) as total,
+        ${productosPedido[0].ID_FACTURA} as id_factura
+    FROM factura f
+    INNER JOIN cliente c
+        ON f.id_cliente = c.id_cliente
+    INNER JOIN pedido_producto pd
+        ON f.id_factura = pd.id_factura
+    INNER JOIN producto p
+        ON pd.id_producto = p.id_producto
+    WHERE f.id_factura =  ${productosPedido[0].ID_FACTURA}`
+    );
     console.log("productosFiltrados", productosFiltrados);
     console.log("productosPedido", productosPedido);
+    console.log(insertDetalleFactura)
     req.flash("success", "Se ha recibido correctamente tu pedido");
     return res.redirect("/Cliente");
   } catch (error) {
@@ -301,15 +337,11 @@ router.get("/showFactura/:id_factura", async (req, res) => {
     const { id_factura } = req.params;
     const cliente = await pool.query(
       ` SELECT distinct
-          B.*,A.fecha_factura
-        FROM 
-          factura AS A 
-        INNER JOIN 
-          cliente B 
-            ON A.id_cliente = B.id_cliente 
-        WHERE 
-          A.id_factura = ?
-        limit 1`,
+          nombre_cliente,
+          nit,
+          direccion
+        FROM detalle_factura
+        WHERE id_factura = ?`,
       [id_factura]
     );
     console.log(cliente);
@@ -317,39 +349,25 @@ router.get("/showFactura/:id_factura", async (req, res) => {
     console.log(row);
     const productosList = await pool.query(
       `SELECT 
-          b.id_producto,
-          c.nombre,
-          b.cantidad_producto,
-          c.precio,
-          (b.cantidad_producto*c.precio) as subtotal
-      FROM 
-        factura AS A
-      LEFT JOIN 
-        pedido_producto AS B
-          ON A.id_factura = B.id_factura
-      INNER JOIN 
-        producto AS C
-          ON B.id_producto = C.id_producto 
-      WHERE A.id_factura = ${id_factura}`
+          id_producto,
+          nombre_producto,
+          cantidad,
+          precio_unitario,
+          subtotal
+      FROM detalle_factura
+      WHERE id_factura = ${id_factura}`
     );
 
     const total = await pool.query(
       `WITH base as 
           ( SELECT 
-            b.id_producto, 
-            c.nombre, 
-            b.cantidad_producto, 
-            c.precio,
-            (b.cantidad_producto*c.precio) as subtotal 
-            FROM 
-              factura AS A 
-            LEFT JOIN 
-              pedido_producto AS B 
-                ON A.id_factura = B.id_factura 
-            INNER JOIN 
-              producto AS C 
-                ON B.id_producto = C.id_producto 
-            WHERE A.id_factura = ${id_factura}
+              id_producto,
+              nombre_producto,
+              cantidad,
+              precio_unitario,
+              subtotal
+            FROM detalle_factura
+            WHERE id_factura = ${id_factura}
           ) 
             SELECT 
               SUM(subtotal) as total
