@@ -87,14 +87,49 @@ router.get("/:page?", async (req, res) => {
 
 router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
   const { id_cliente } = req.params;
-  const nombre = await pool.query(
-    "SELECT nombre FROM cliente WHERE id_cliente = ?",
-    [id_cliente]
-  );
-  console.log(nombre);
-  await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
-  req.flash("success", `El cliente ${nombre} ha sido eliminado exitosamente`);
-  res.redirect("/cliente");
+  try {
+    const nombre = await pool.query(
+      "SELECT nombre FROM cliente WHERE id_cliente = ?",
+      [id_cliente]
+    );
+    console.log(nombre);
+    if (!nombre) {
+      throw new Error("Cliente no encontrado");
+    }
+
+    // Obtener facturas del cliente
+    let facturas = await pool.query(
+      "SELECT id_factura FROM factura WHERE id_cliente = ?",
+      [id_cliente]
+    );
+
+    console.log(facturas);
+
+    // Eliminar todos los registros en pedido_producto relacionados con las facturas del cliente
+    for (let i = 0; i < facturas.length; i++) {
+      console.log("entra");
+      console.log(facturas[i].id_factura);
+      await pool.query("DELETE FROM pedido_producto WHERE id_factura = ?", [
+        facturas[i].id_factura,
+      ]);
+      await pool.query(
+        `UPDATE detalle_factura SET id_factura = NULL WHERE id_factura = ${facturas[i].id_factura}`
+      );
+    }
+
+    // Eliminar todas las facturas del cliente
+    await pool.query("DELETE FROM factura WHERE id_cliente = ?", [id_cliente]);
+
+    // Eliminar el cliente
+    await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
+
+    req.flash("success", `El cliente ${nombre} ha sido eliminado exitosamente`);
+    res.redirect("/cliente");
+  } catch (err) {
+    console.error("Error ejecutando las consultas:", err);
+    req.flash("error", "Hubo un error al intentar eliminar el cliente.");
+    res.redirect("/cliente");
+  }
 });
 
 router.get("/edit/:id", isLoggedIn, async (req, res) => {
@@ -252,7 +287,7 @@ router.post("/addFactura/:row", async (req, res) => {
     );
 
     let iva = sumaTotal * 0.19;
-    let total = sumaTotal + iva
+    let total = sumaTotal + iva;
 
     const insertFactura = await pool.query(
       "INSERT INTO factura (total, iva, fecha_factura, factura_oficial, id_empleado, id_cliente) VALUES (?, ?, ?, 'si', ?, ?)",
@@ -323,7 +358,7 @@ router.post("/addFactura/:row", async (req, res) => {
     );
     console.log("productosFiltrados", productosFiltrados);
     console.log("productosPedido", productosPedido);
-    console.log(insertDetalleFactura)
+    console.log(insertDetalleFactura);
     req.flash("success", "Se ha recibido correctamente tu pedido");
     return res.redirect("/Cliente");
   } catch (error) {
