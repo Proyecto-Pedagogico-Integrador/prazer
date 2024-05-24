@@ -102,13 +102,8 @@ router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
       "SELECT id_factura FROM factura WHERE id_cliente = ?",
       [id_cliente]
     );
-
-    console.log(facturas);
-
     // Eliminar todos los registros en pedido_producto relacionados con las facturas del cliente
     for (let i = 0; i < facturas.length; i++) {
-      console.log("entra");
-      console.log(facturas[i].id_factura);
       await pool.query("DELETE FROM pedido_producto WHERE id_factura = ?", [
         facturas[i].id_factura,
       ]);

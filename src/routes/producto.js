@@ -65,6 +65,17 @@ router.get('/:page?', async (req, res) => {
 
 router.get('/delete/:id_producto', async (req, res) => {
     const { id_producto } = req.params;
+     let productos = await pool.query(
+        "SELECT id_pedido FROM pedido_producto WHERE id_producto = ?",
+        [id_producto]
+      );
+      // Eliminar todos los registros en pedido_producto relacionados con las productos del cliente
+      for (let i = 0; i < productos.length; i++) {
+        await pool.query("DELETE FROM pedido_producto WHERE id_pedido = ?", [
+          productos[i].id_pedido,
+        ]);
+      }
+  
     await pool.query('DELETE FROM producto WHERE id_producto = ?', [id_producto]);
     req.flash('success', 'Producto eliminado exitosamente');
     res.redirect('/producto');
