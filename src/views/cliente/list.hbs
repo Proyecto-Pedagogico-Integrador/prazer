@@ -12,15 +12,17 @@
 <div class="container p-4">
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
         <div class="container">
-            <span class="text" tabindex="0" data-placement="top" title="Agregar Cliente" style="display: inline-block">
-                <a class="btn btn-outline-success" href="/cliente/add">
-                    <span class="icon text-dark-50">
-                        <i class="fas fa-plus"></i>
-                    </span>
-                    <span class="text"></span>
-                </a>
-            </span>
             <h3 style="display: inline-block; margin-left: 40%">Clientes</h3>
+                <div class="flex-container">
+                    <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
+                        <a class="btn btn-outline-success" href="/cliente/add">
+                            <span class="icon text-dark-50">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span class="text"></span>
+                        </a>
+                    </span>
+                    <input type="text" id="buscarCliente" class="form-control" placeholder="Buscar cliente..." style="max-width: 300px;">
         </div>
 
         
@@ -84,5 +86,21 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('buscarCliente').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#tablaArticulos tbody tr');
+
+            rows.forEach(function(row) {
+                var nombre = row.cells[1].innerText.toLowerCase();
+                if (nombre.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+</script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,65 +12,71 @@
     <div class="container p-4">
         <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
             <div class="container">
-                <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
-                    <a class="btn btn-outline-success" href="/producto/add">
-                        <span class="icon text-dark-50">
-                            <i class="fas fa-plus"></i>
-                        </span>
-                        <span class="text"></span>
-                    </a>
-                </span>
                 <h3 style="display: inline-block; margin-left: 40%">Productos</h3>
+                <div class="flex-container">
+                    <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
+                        <a class="btn btn-outline-success" href="/producto/add">
+                            <span class="icon text-dark-50">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                            <span class="text"></span>
+                        </a>
+                    </span>
+                    <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." style="max-width: 300px;">
+                </div>
+                
             </div>
-             <div class="table-responsive">
-            <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-                <thead class="bg-dark text-white">
-                    <tr class="text-center">
-                        <th>CÓDIGO</th>
-                        <th>NOMBRE</th>
-                        <th>PRECIO</th>
-                        <th>PESO</th>
-                        <th>CANTIDAD</th>
-                        <th>ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each producto}}
-                    <tr style="text-align: center;">
-                        <td>{{id_producto}}</td>
-                        <td>{{nombre}}</td>
-                        <td>{{precio}}</td>
-                        <td>{{peso}}</td>
-                        <td>{{cantidad}}</td>
-                        <td class="text-center">
-                            <span class="text" tabindex="0" data-placement="top" title="Editar">
-                                <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
-                                    <span class="icon text-dark-50">
-                                        <i class="fas fa-pen"></i>
-                                    </span>
-                                    <span class="text"></span>
-                                </a>
-                            </span>
-                            <span class="text" tabindex="0" data-placement="top" title="Eliminar">
-                                <a class="btn btn-outline-danger" href="javascript:EliminarProducto({{id_producto}})">
-                                    <span class="icon text-dark-50">
-                                        <i class="fas fa-trash"></i>
-                                    </span>
-                                    <span class="text"></span>
-                                </a>
-                            </span>
-                        </td>
-                    </tr>
-                    {{else}}
-                    <div class="col-md-4 mx-auto">
-                        <div class="card card-body text-center">
-                            <p>No hay productos por el momento :C</p>
-                            <a href="/producto/add">Crea Uno!</a>
+            
+
+            <div class="table-responsive">
+                <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
+                    <thead class="bg-dark text-white">
+                        <tr class="text-center">
+                            <th>CÓDIGO</th>
+                            <th>NOMBRE</th>
+                            <th>PRECIO</th>
+                            <th>PESO</th>
+                            <th>CANTIDAD</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each producto}}
+                        <tr style="text-align: center;">
+                            <td>{{id_producto}}</td>
+                            <td>{{nombre}}</td>
+                            <td>{{precio}}</td>
+                            <td>{{peso}}</td>
+                            <td>{{cantidad}}</td>
+                            <td class="text-center">
+                                <span class="text" tabindex="0" data-placement="top" title="Editar">
+                                    <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
+                                        <span class="icon text-dark-50">
+                                            <i class="fas fa-pen"></i>
+                                        </span>
+                                        <span class="text"></span>
+                                    </a>
+                                </span>
+                                <span class="text" tabindex="0" data-placement="top" title="Eliminar">
+                                    <a class="btn btn-outline-danger" href="javascript:EliminarProducto({{id_producto}})">
+                                        <span class="icon text-dark-50">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                        <span class="text"></span>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        {{else}}
+                        <div class="col-md-4 mx-auto">
+                            <div class="card card-body text-center">
+                                <p>No hay productos por el momento :C</p>
+                                <a href="/producto/add">Crea Uno!</a>
+                            </div>
                         </div>
-                    </div>
-                    {{/each}}
-                </tbody>
-            </table>
+                        {{/each}}
+                    </tbody>
+                </table>
             </div>
 
             <div class="pagination" style="display: flex; justify-content: center; align-items: center;">
@@ -84,25 +92,37 @@
             </div>
         </div>
     </div>
-</body>
-<script>
-    function EliminarProducto(id_producto) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminarlo'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location = "/producto/delete/" + id_producto;
-            }
+
+    <script>
+        function EliminarProducto(id_producto) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "No podrás revertir esto.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminarlo'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = "/producto/delete/" + id_producto;
+                }
+            });
+        }
+
+        document.getElementById('buscarProducto').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#tablaArticulos tbody tr');
+
+            rows.forEach(function(row) {
+                var nombre = row.cells[1].innerText.toLowerCase();
+                if (nombre.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
-    }       
     </script>
-
-    
-
-
+</body>
+</html>
