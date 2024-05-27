@@ -8,39 +8,95 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <style>
-    .flex-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+    .form-control {
+      border-radius: 5px; /* Redondear los bordes */
+      width: 100%; /* Establecer el ancho al 100% */
+      box-sizing: border-box; /* Incluir el ancho del borde en el tamaño total */
     }
-    #buscarProducto {
-      max-width: 300px;
-      margin-top: 10px;
-    }
+    .dropbtn {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Estilos para el contenedor del menú desplegable */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Estilos para el contenido del menú desplegable */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Estilos para las opciones del menú desplegable */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Estilos para las opciones del menú desplegable al pasar el mouse sobre ellas */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilos para el buscador */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Mostrar el menú desplegable cuando el botón se haga clic */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
   </style>
 </head>
 <body>
 
   <div class="container p-4">
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
-      <div class="flex-container">
-        <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
-          <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
-            <span class="icon text-dark-50">
-              <i class="fas fa-arrow-left"></i>
-            </span>
-            <span class="text"></span>
-          </a>
-        </span>
-        <h3 style="text-align: center; flex-grow: 1;">Generar Pedido</h3>
-      </div>
-      
-      <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." />
+      <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
+        <a class="btn btn-outline-success" href="/cliente/listFactura/{{row}}">
+          <span class="icon text-dark-50">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span class="text"></span>
+        </a>
+      </span>
 
-      <form action="/cliente/addFactura/{{row}}" method="POST">
+      <br action="/cliente/addFactura/{{row}}" method="POST">
+        <h3 style="text-align: center;">Generar Pedido</h3>
         <br>
-        <table class="table">
+        <div class="dropdown">
+    <button class="dropbtn">Cliente</button>
+    <div class="dropdown-content">
+        <input type="text" placeholder="Buscar..." class="search-bar">
+        <a href="#">Opción 1</a>
+        <a href="#">Opción 2</a>
+        <a href="#">Opción 3</a>
+        <!-- Agrega más opciones aquí -->
+    </div>
+    <br>
+</div>
+
+        <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar producto..."  style="max-width: 300px;"/>
+        <table class="table" id="tablaProductos">
           <thead>
             <tr class="text-center">
               <th>PRODUCTO</th>
@@ -49,26 +105,14 @@
               <th>CANTIDAD</th>
             </tr>
           </thead>
-          <tbody id="tablaBody">
+          <tbody>
             {{#each productosList}}
             <tr class="text-center">
-              <td>
-                <input type="text" readonly="readonly" name="nombreProducto" value="{{nombre}}" />
-              </td>
-              <td>
-                <input type="number" readonly="readonly" name="cantidadBD" value="{{cantidad}}" min="0" id="cantidadBD" />
-              </td>
-              <td>
-                <input type="number" readonly="readonly" name="precio" value="{{precio}}" min="0" />
-              </td>
-              <td>
-                <input type="number" name="cantidadProductosSeleccionados" value="" min="0" oninput="validarCantidad()"
-                  id="cantidadProductosSeleccionados" />
-                <span class="nombreMensaje"></span>
-              </td>
-              <td>
-                <input type="checkbox" name="productosSeleccionados" style="display:none;" value="{{id_producto}}" checked />
-              </td>
+              <td>{{nombre}}</td>
+              <td>{{cantidad}}</td>
+              <td>{{precio}}</td>
+              <td contenteditable="true" class="form-control" oninput="validarCantidad()"></td>
+              <td style="display:none;">{{id_producto}}</td>
             </tr>
             {{/each}}
           </tbody>
@@ -94,13 +138,13 @@
       let allValid = true;
 
       for (let i = 0; i < cantidadBDs.length; i++) {
-        if (!cantidadProductosSeleccionadosList[i].value.trim()) {
+        if (!cantidadProductosSeleccionadosList[i].innerText.trim()) {
           nombreMensajes[i].innerText = '';
           continue;
         }
 
-        const cantidadBD = parseInt(cantidadBDs[i].value);
-        const cantidadProductosSeleccionados = parseInt(cantidadProductosSeleccionadosList[i].value);
+        const cantidadBD = parseInt(cantidadBDs[i].innerText);
+        const cantidadProductosSeleccionados = parseInt(cantidadProductosSeleccionadosList[i].innerText);
 
         if (cantidadBD < cantidadProductosSeleccionados) {
           nombreMensajes[i].innerText = 'Se ha excedido';
@@ -127,26 +171,22 @@
 
     // Llama a las funciones de validación al cargar la página
     window.onload = function () {
-      const cantidadProductosSeleccionados = document.querySelectorAll('[name="cantidadProductosSeleccionados"]');
-      for (let i = 0; i < cantidadProductosSeleccionados.length; i++) {
-        cantidadProductosSeleccionados[i].addEventListener('input', validarCantidad);
-      }
-    };
+      // Agregar evento de escucha para el campo de búsqueda
+      const inputBusqueda = document.getElementById('inputBusqueda');
+      inputBusqueda.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#tablaProductos tbody tr');
 
-    // Filtro de búsqueda de productos
-    document.getElementById('buscarProducto').addEventListener('input', function() {
-      const filter = this.value.toLowerCase();
-      const rows = document.querySelectorAll('#tablaBody tr');
-
-      rows.forEach(row => {
-        const producto = row.querySelector('input[name="nombreProducto"]').value.toLowerCase();
-        if (producto.includes(filter)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
+        rows.forEach(row => {
+          const producto = row.querySelector('td:nth-child(1)').innerText.toLowerCase();
+          if (producto.includes(filter)) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
       });
-    });
+    };
   </script>
 
 </body>

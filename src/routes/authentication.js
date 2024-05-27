@@ -10,7 +10,7 @@ router.get('/signup', (req, res) => {
 });
 
 router.post('/signup', passport.authenticate('local.signup', {
-  successRedirect: '/cliente',
+  successRedirect: '/bienvenida',
   failureRedirect: '/inicio',
   failureFlash: true
 }));
@@ -29,7 +29,7 @@ router.post('/signin', (req, res, next) => {
     res.redirect('/inicio');
   }
   passport.authenticate('local.signin', {
-    successRedirect: '/cliente',
+    successRedirect: '/bienvenida',
     failureRedirect: '/inicio',
     failureFlash: true
   })(req, res, next);

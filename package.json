@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
+    "datatables.net-dt": "^2.0.7",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
     "express-mysql-session": "^2.0.1",

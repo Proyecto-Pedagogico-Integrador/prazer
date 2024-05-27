@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
-
 <body>
     <div class="container p-4">
         <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
@@ -17,10 +18,8 @@
                     <br>
                     <input type="date" id="fechaInicio" name="fechaInicio" max="">
                     <input type="date" id="fechaFin" name="fechaFin" max="">
-                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                    <button id="guardarBtn" disabled>Guardar</button>
                 </form>
-
-
                 <br>
                 <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
                     <thead class="bg-dark text-white">
@@ -32,61 +31,145 @@
                             <th>TOTAL</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#each factura}}
-                        <tr style="text-align: center;">
-                            <td>{{id_factura}}</td>
-                            <td>{{nombre}}</td>
-                            <td>{{formatDate fecha_factura}}</td>
-                            <td>{{iva}}</td>
-                            <td class="total">{{total}}</td>
-                        </tr>
-                        {{else}}
-                    <div class="col-md-4 mx-auto">
-                        <div class="card card-body text-center">
-                            <p>No hay facturas registradas en este rango de fechas</p>
-                        </div>
-                    </div>
-                    {{/each}}
+                    <tbody id="facturaBody">
+                        <!-- Facturas will be injected here by JavaScript -->
                     </tbody>
                     <tfoot>
                         <tr class="text-center">
-                            <td colspan="4" style="text-align: right;"><h5>Total</h5></td>
-                            <td id="footerTotal"><h5 id="sumaTotal"></h5></td>
+                            <td colspan="4" style="text-align: right;">
+                                <h5>Total</h5>
+                            </td>
+                            <td id="footerTotal">
+                                <h5 id="sumaTotal"></h5>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
+                <div id="noFacturasMessage" class="col-md-4 mx-auto" style="display: none;">
+                    <div class="card card-body text-center">
+                        <p>No hay facturas registradas en este rango de fechas</p>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const fechaInput1 = document.getElementById('fechaInicio');
+            const fechaInput2 = document.getElementById('fechaFin');
+            const guardarBtn = document.getElementById('guardarBtn');
+            const facturaBody = document.getElementById('facturaBody');
+            const noFacturasMessage = document.getElementById('noFacturasMessage');
+            const sumaTotalElement = document.getElementById('sumaTotal');
+
+            const now = new Date();
+            const fechaActual = now.toISOString().split('T')[0]; // Only take the date part (YYYY-MM-DD)
+
+            // Set the max attribute to today's date
+            fechaInput1.setAttribute('max', fechaActual);
+            fechaInput2.setAttribute('max', fechaActual);
+
+            // Function to check date validity and toggle the button
+            function validateDates() {
+                const fechaInicio = fechaInput1.value;
+                const fechaFin = fechaInput2.value;
+
+                if (fechaInicio && fechaFin) {
+                    guardarBtn.disabled = !(fechaInicio <= fechaFin);
+                } else {
+                    guardarBtn.disabled = true;
+                }
+            }
+
+            // Add event listeners to both date inputs
+            fechaInput1.addEventListener('change', validateDates);
+            fechaInput2.addEventListener('change', validateDates);
+
+            // Initial validation check
+            validateDates();
+
+            document.getElementById('formBuscar').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const fechaInicio = fechaInput1.value;
+                const fechaFin = fechaInput2.value;
+
+                console.log(`Fecha inicio: ${fechaInicio}`);
+                console.log(`Fecha fin: ${fechaFin}`);
+
+                if (fechaInicio && fechaFin && fechaInicio <= fechaFin) {
+                    fetchFacturas(fechaInicio, fechaFin);
+                } else {
+                    console.log('Invalid date range');
+                    //Colocar mensaje de rango de fechas invalido
+                }
+            });
+
+            async function fetchFacturas(fechaInicio, fechaFin) {
+                try {
+                    const response = await fetch(`/reporte/listFacturaReporte/${fechaInicio}/${fechaFin}`);
+                    const data = await response.json();
+                    console.log('Datos recibidos:', data);
+
+                    const facturas = data.factura || [];
+                    console.log('Facturas:', facturas);
+
+                    if (facturas.length > 0) {
+                        noFacturasMessage.style.display = 'none';
+                        renderFacturas(facturas);
+                        updateTotal();
+                    } else {
+                        noFacturasMessage.style.display = 'block';
+                        facturaBody.innerHTML = '';
+                        sumaTotalElement.textContent = '0';
+                    }
+                } catch (error) {
+                    console.error('Error fetching facturas:', error);
+                    swal('Error', 'No se pudieron cargar las facturas. Inténtalo de nuevo más tarde.', 'error');
+                }
+            }
+
+            function renderFacturas(facturas) {
+                facturaBody.innerHTML = ''; // Clear existing rows
+                facturas.forEach(factura => {
+                    const row = document.createElement('tr');
+                    row.style.textAlign = 'center';
+
+                    const idFacturaCell = document.createElement('td');
+                    idFacturaCell.textContent = factura.id_factura;
+                    row.appendChild(idFacturaCell);
+
+                    const nombreCell = document.createElement('td');
+                    nombreCell.textContent = factura.nombre;
+                    row.appendChild(nombreCell);
+
+                    const fechaFacturaCell = document.createElement('td');
+                    fechaFacturaCell.textContent = factura.fecha_factura;
+                    row.appendChild(fechaFacturaCell);
+
+                    const ivaCell = document.createElement('td');
+                    ivaCell.textContent = factura.iva;
+                    row.appendChild(ivaCell);
+
+                    const totalCell = document.createElement('td');
+                    totalCell.classList.add('total');
+                    totalCell.textContent = factura.total;
+                    row.appendChild(totalCell);
+
+                    facturaBody.appendChild(row);
+                });
+            }
+
+            function updateTotal() {
+                const totales = document.querySelectorAll('.total');
+                let sumaTotal = 0;
+                totales.forEach(total => {
+                    sumaTotal += parseFloat(total.textContent);
+                });
+                sumaTotalElement.textContent = sumaTotal.toFixed(2);
+            }
+        });
+    </script>
 </body>
-<script>
-    document.getElementById('formBuscar').addEventListener('submit', async function (event) {
-        event.preventDefault(); 
-
-        const fechaInicio = document.getElementById('fechaInicio').value;
-        console.log(`fecha front ${fechaInicio}`)
-        const fechaFin = document.getElementById('fechaFin').value;
-        console.log(`fecha front ${fechaFin}`)
-
-        window.location = '/reporte/listFacturaReporte/' + fechaInicio + '/' + fechaFin;
-
-    });
-
-    const fechaInput1 = document.getElementById('fechaInicio');
-    const fechaInput2 = document.getElementById('fechaFin');
-        const fechaActual = new Date().toISOString().split('T')[0];
-        fechaInput1.setAttribute('max', fechaActual);
-        fechaInput2.setAttribute('max', fechaActual);
-    
-  const totales = document.querySelectorAll('.total');
-
-  let sumaTotal = 0;
-
-  totales.forEach(total => {
-      sumaTotal += parseFloat(total.textContent); 
-  });
-
-  const sumaTotalElement = document.getElementById('sumaTotal');
-  sumaTotalElement.textContent = sumaTotal;
-    
-</script>
+</html>
