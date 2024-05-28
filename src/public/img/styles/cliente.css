@@ -1,5 +1,5 @@
 body {
-  background-color: white;
+  background-color: rgb(195, 223, 216);
 }
 
 .container2 {
@@ -8,11 +8,11 @@ body {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   margin: 50px auto;
-  background-color: #edead1;
+  background-color: white;
 }
 
 .card {
-  background-color: #edead1;
+  background-color: white;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   margin: 50px auto;
@@ -20,7 +20,7 @@ body {
 }
 
 .card-body {
-  background-color: #edead1;
+  background-color: white;
 }
 
 @media (max-width: 768px) {
@@ -35,3 +35,13 @@ body {
   }
 }
 
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.flex-container .btn,
+.flex-container .form-control {
+  margin: 0;
+}
