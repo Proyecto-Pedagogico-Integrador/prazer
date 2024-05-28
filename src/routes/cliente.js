@@ -375,7 +375,10 @@ router.get("/showFactura/:id_factura", async (req, res) => {
       [id_factura]
     );
     console.log(cliente);
-    let row = cliente[0].id_cliente;
+    let base = await pool.query(
+      'SELECT id_cliente FROM cliente WHERE nit = ?', [cliente[0].nit]
+    );
+    let row = base[0].id_cliente
     console.log(row);
     const productosList = await pool.query(
       `SELECT 

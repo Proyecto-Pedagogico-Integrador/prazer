@@ -40,23 +40,23 @@
                         <div class="form-group">
                             <h6 style="text-align: left;">Nombre*</h6>
                             <span id="nombreMensaje"></span>
-                            <input type="text" name="nombre" id="nombre" class="form-control"
+                            <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
                                 autofocus required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Precio*</h6>
                             <input type="number" name="precio" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Peso*</h6>
                             <input type="number" name="peso" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Cantidad*</h6>
                             <input type="number" name="cantidad" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" required>
+                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="11" required>
                         </div>
                         <div class="form-group">
                             <button id="guardarBtn" class="btn btn-success btn-block" disabled>
