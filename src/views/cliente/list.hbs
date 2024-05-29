@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,29 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
-
 <body>
 <div class="container p-4">
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
         <div class="container">
             <h3 style="display: inline-block; margin-left: 40%">Clientes</h3>
-                <div class="flex-container">
-                    <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
-                        <a class="btn btn-outline-success" href="/cliente/add">
-                            <span class="icon text-dark-50">
-                                <i class="fas fa-plus"></i>
-                            </span>
-                            <span class="text"></span>
-                        </a>
-                    </span>
-                    <input type="text" id="buscarCliente" class="form-control" placeholder="Buscar cliente..." style="max-width: 300px;">
-        </div>
-
-
-
+            <div class="flex-container">
+                <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
+                    <a class="btn btn-outline-success" href="/cliente/add">
+                        <span class="icon text-dark-50">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span class="text"></span>
+                    </a>
+                </span>
+                <input type="text" id="buscarCliente" class="form-control" placeholder="Buscar cliente..." style="max-width: 300px;">
+            </div>
             <div class="table-responsive">
                 <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-                    <thead style="background-color: darkcyan;">
+                    <thead style="background-color: darkcyan; color: white">
                         <tr class="text-center">
                             <th>CÓDIGO</th>
                             <th>NOMBRE</th>
@@ -41,58 +36,67 @@
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#each cliente}}
-                        <tr style="text-align: center;">
-                            <td>{{id_cliente}}</td>
-                            <td>{{nombre}}</td>
-                            <td>{{nit}}</td>
-                            <td>{{telefono}}</td>
-                            <td>{{direccion}}</td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group" aria-label="Acciones">
-                                    <a title="Editar Cliente" class="btn btn-outline-warning"
-                                        href="/cliente/edit/{{id_cliente}}">
-                                        <i class="fas fa-pen"></i>
-                                    </a>
-                                    <a title="Facturas" class="btn btn-outline-success" href="/cliente/listFactura/{{id_cliente}}">
-                                    <i class="fas fa-file"></i> 
-                                </a>
-                                    <button title="Eliminar Cliente" class="btn btn-outline-danger"
-                                        onclick="EliminarCliente({{id_cliente}})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        {{else}}
-                        <div class="col-md-4 mx-auto">
-                            <div class="card card-body text-center">
-                                <p>No hay clientes por el momento :C</p>
-                                <a href="/cliente/add">Crea Uno!</a>
-                            </div>
-                        </div>
-                        {{/each}}
+                    <tbody id="tablaClientes">
+                        <!-- Contenido dinámico -->
                     </tbody>
                 </table>
             </div>
-
-            <div class="pagination" style="display: flex; justify-content: center; align-items: center; ">
-                {{#each pages}}
-                {{#if (eq this ../currentPage)}}
-                <button style="background-color: darkcyan;" class="btn btn-info">{{this}}</button>
-                {{else}}
-                <button class="btn btn-outline-info" onclick="window.location.href='/cliente/{{this}}'"
-                    aria-label="Page {{this}}">
-                    {{this}}
-                </button>
-            {{/if}}
-            {{/each}}
+            <div class="pagination" style="display: flex; justify-content: center; align-items: center;">
+                <!-- Paginación dinámica -->
+                <div id="paginationButtons"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    document.getElementById('buscarCliente').addEventListener('keyup', function() {
+        var input = this.value.toLowerCase();
+        fetchClientes(input);
+    });
+
+    function fetchClientes(query = '', page = 1) {
+        fetch(`/cliente/search?query=${query}&page=${page}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('tablaClientes');
+                tbody.innerHTML = '';
+                data.clientes.forEach(cliente => {
+                    const row = `
+                        <tr style="text-align: center;">
+                            <td>${cliente.id_cliente}</td>
+                            <td>${cliente.nombre}</td>
+                            <td>${cliente.nit}</td>
+                            <td>${cliente.telefono}</td>
+                            <td>${cliente.direccion}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group" aria-label="Acciones">
+                                    <a title="Editar Cliente" class="btn btn-outline-warning" href="/cliente/edit/${cliente.id_cliente}">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <button title="Eliminar Cliente" class="btn btn-outline-danger" onclick="EliminarCliente(${cliente.id_cliente})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                const paginationButtons = document.getElementById('paginationButtons');
+                paginationButtons.innerHTML = '';
+                for (let i = 1; i <= data.pageCount; i++) {
+                    const button = document.createElement('button');
+                    button.className = 'btn ' + (i === data.currentPage ? 'btn-info' : 'btn-outline-info');
+                    button.innerText = i;
+                    button.onclick = () => fetchClientes(query, i);
+                    paginationButtons.appendChild(button);
+                }
+            })
+            .catch(error => console.error('Error fetching clients:', error));
+    }
+
     function EliminarCliente(id_cliente) {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -107,40 +111,10 @@
                 window.location = "/cliente/delete/" + id_cliente;
             }
         });
-    }   
+    }
 
-    document.getElementById('buscarCliente').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#tablaArticulos tbody tr');
-
-            rows.forEach(function(row) {
-                var nombre = row.cells[1].innerText.toLowerCase();
-                if (nombre.includes(input)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+    // Cargar los clientes inicialmente
+    fetchClientes();
 </script>
 </body>
-
-<script>
-    function EliminarCliente(id_cliente) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminarlo'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location = "/cliente/delete/" + id_cliente;
-            }
-        });
-    }   
-</script>
-
 </html>

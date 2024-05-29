@@ -27,9 +27,11 @@
     
     
             <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-                <thead class="bg-dark text-white">
+                <thead style="background-color: darkcyan; color: white">
                     <tr class="text-center">
                         <th>ID FACTURA</th>
+                        <th>CLIENTE</th>
+                        <th>NIT</th>
                         <th>FECHA</th>
                         <th>IVA</th>
                         <th>TOTAL</th>
@@ -41,6 +43,8 @@
                     {{#each factura}}
                     <tr style="text-align: center;">
                         <td>{{id_factura}}</td>
+                        <td>cliente</td>
+                        <td>nit</td>
                         <td>{{formatDate fecha_factura}}</td>
                         <td>{{iva}}</td>
                         <td>{{total}}</td>

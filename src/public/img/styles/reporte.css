@@ -1,6 +1,4 @@
-body {
-    background-color: white;
-  }
+
   
   .container2 {
     margin-left: auto;
@@ -8,11 +6,11 @@ body {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); /* Sombras para simular elevación */
     border-radius: 10px;
     margin: 50px auto;
-    background-color: #edead1;
+    background-color: white;
   }
   
   .card{
-    background-color: #edead1;
+    background-color: white;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); /* Sombras para simular elevación */
     border-radius: 10px;
     margin: 50px auto;
@@ -20,7 +18,7 @@ body {
   }
   
   .card-body{
-    background-color: #edead1;
+    background-color: white;
   }
   
   .styled-input {

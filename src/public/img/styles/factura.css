@@ -1,5 +1,5 @@
 body {
-  background-color: white;
+  background-color: rgb(195, 223, 216);
 }
 
 .container2 {
@@ -8,12 +8,12 @@ body {
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   margin: 50px auto;
-  background-color: #edead1;
+  background-color: white;
   overflow-x: auto; /* Agregamos scroll horizontal si el contenido excede el ancho del contenedor */
 }
 
 .card {
-  background-color: #edead1;
+  background-color: white;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
   border-radius: 10px;
   margin: 50px auto;
@@ -21,7 +21,7 @@ body {
 }
 
 .card-body {
-  background-color: #edead1;
+  background-color: white;
 }
 
 /* Estilos para pantallas pequeñas */

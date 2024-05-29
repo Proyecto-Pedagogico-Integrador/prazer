@@ -40,18 +40,19 @@
                         <br>
                         <form id="clienteForm" action="/cliente/add" method="POST">
                             <div class="form-group">
-                                <h6 style="text-align: left;">Nombre*</h6>
-                                <span id="nombreMensaje"></span>
-                                <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
-                                    autofocus required>
-                            </div>
-                            <div class="form-group">
                                 <h6 style="text-align: left;">NIT*</h6>
                                 <span id="nitMensaje"></span>
                                 <input type="text" name="nit" id="nit" class="form-control"
                                     onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode == 45)"
                                     minlength="8" maxlength="11" required>
                             </div>
+                            <div class="form-group">
+                                <h6 style="text-align: left;">Nombre*</h6>
+                                <span id="nombreMensaje"></span>
+                                <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
+                                    autofocus required>
+                            </div>
+                            
                             <div class="form-group">
                                 <h6 style="text-align: left;">Teléfono*</h6>
                                 <input type="text" name="telefono" class="form-control"

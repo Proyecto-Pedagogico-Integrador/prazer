@@ -24,13 +24,11 @@
                     </span>
                     <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." style="max-width: 300px;">
                 </div>
-                
             </div>
-            
 
             <div class="table-responsive">
-                <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
-                    <thead class="bg-dark text-white">
+                <table id="tablaProductos" class="table mt-2 table-bordered table-striped">
+                    <thead style="background-color: darkcyan; color: white">
                         <tr class="text-center">
                             <th>CÓDIGO</th>
                             <th>NOMBRE</th>
@@ -40,60 +38,75 @@
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#each producto}}
-                        <tr style="text-align: center;">
-                            <td>{{id_producto}}</td>
-                            <td>{{nombre}}</td>
-                            <td>{{precio}}</td>
-                            <td>{{peso}}</td>
-                            <td>{{cantidad}}</td>
-                            <td class="text-center">
-                                <span class="text" tabindex="0" data-placement="top" title="Editar">
-                                    <a class="btn btn-outline-warning" href="/producto/edit/{{id_producto}}">
-                                        <span class="icon text-dark-50">
-                                            <i class="fas fa-pen"></i>
-                                        </span>
-                                        <span class="text"></span>
-                                    </a>
-                                </span>
-                                <span class="text" tabindex="0" data-placement="top" title="Eliminar">
-                                    <a class="btn btn-outline-danger" href="javascript:EliminarProducto({{id_producto}})">
-                                        <span class="icon text-dark-50">
-                                            <i class="fas fa-trash"></i>
-                                        </span>
-                                        <span class="text"></span>
-                                    </a>
-                                </span>
-                            </td>
-                        </tr>
-                        {{else}}
-                        <div class="col-md-4 mx-auto">
-                            <div class="card card-body text-center">
-                                <p>No hay productos por el momento :C</p>
-                                <a href="/producto/add">Crea Uno!</a>
-                            </div>
-                        </div>
-                        {{/each}}
+                    <tbody id="tablaProductosBody">
+                        <!-- Contenido dinámico -->
                     </tbody>
                 </table>
             </div>
 
             <div class="pagination" style="display: flex; justify-content: center; align-items: center;">
-                {{#each pages}}
-                {{#if (eq this ../currentPage)}}
-                     <button class="btn btn-info">{{this}}</button>
-                 {{else}}
-                    <button class="btn btn-outline-info" onclick="window.location.href='/producto/{{this}}'" aria-label="Page {{this}}">
-                 {{this}}
-                    </button>
-                {{/if}}
-                {{/each}}
+                <!-- Paginación dinámica -->
+                <div id="paginationButtons"></div>
             </div>
         </div>
     </div>
 
     <script>
+        document.getElementById('buscarProducto').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            fetchProductos(input);
+        });
+
+        function fetchProductos(query = '', page = 1) {
+            fetch(`/producto/search?query=${query}&page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('tablaProductosBody');
+                    tbody.innerHTML = '';
+                    data.productos.forEach(producto => {
+                        const row = `
+                            <tr style="text-align: center;">
+                                <td>${producto.id_producto}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.precio}</td>
+                                <td>${producto.peso}</td>
+                                <td>${producto.cantidad}</td>
+                                <td class="text-center">
+                                    <span class="text" tabindex="0" data-placement="top" title="Editar">
+                                        <a class="btn btn-warning" href="/producto/edit/${producto.id_producto}">
+                                            <span class="icon text-dark-50" >
+                                                <i class="fas fa-pen"> Editar</i>
+                                            </span>
+                                            <span class="text"></span>
+                                        </a>
+                                    </span>
+                                    <span class="text" tabindex="0" data-placement="top" title="Eliminar">
+                                        <a class="btn btn-outline-danger" href="javascript:EliminarProducto(${producto.id_producto})">
+                                            <span class="icon text-dark-50">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                            <span class="text"></span>
+                                        </a>
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+
+                    const paginationButtons = document.getElementById('paginationButtons');
+                    paginationButtons.innerHTML = '';
+                    for (let i = 1; i <= data.pageCount; i++) {
+                        const button = document.createElement('button');
+                        button.className = 'btn ' + (i === data.currentPage ? 'btn-info' : 'btn-outline-info');
+                        button.innerText = i;
+                        button.onclick = () => fetchProductos(query, i);
+                        paginationButtons.appendChild(button);
+                    }
+                })
+                .catch(error => console.error('Error fetching productos:', error));
+        }
+
         function EliminarProducto(id_producto) {
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -110,19 +123,8 @@
             });
         }
 
-        document.getElementById('buscarProducto').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var rows = document.querySelectorAll('#tablaArticulos tbody tr');
-
-            rows.forEach(function(row) {
-                var nombre = row.cells[1].innerText.toLowerCase();
-                if (nombre.includes(input)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+        // Cargar los productos inicialmente
+        fetchProductos();
     </script>
 </body>
 </html>

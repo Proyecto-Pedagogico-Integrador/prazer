@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 const pool = require("../database");
 const { isLoggedIn } = require("../lib/auth");
 
@@ -41,13 +40,7 @@ router.post("/validarNit", async (req, res) => {
 router.post("/add", isLoggedIn, async (req, res) => {
   try {
     const { nombre, nit, telefono, direccion } = req.body;
-    const newCliente = {
-      nombre,
-      nit,
-      telefono,
-      direccion,
-    };
-    console.log("newCliente", newCliente);
+    const newCliente = { nombre, nit, telefono, direccion };
     await pool.query("INSERT INTO cliente set ?", [newCliente]);
     req.flash(
       "success",
@@ -56,6 +49,37 @@ router.post("/add", isLoggedIn, async (req, res) => {
     res.redirect("/Cliente");
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    const { query = '', page = 1 } = req.query;
+    const limit = 5;
+    const offset = (page - 1) * limit;
+
+    const results = await pool.query(
+      "SELECT * FROM cliente WHERE LOWER(nombre) LIKE ? LIMIT ? OFFSET ?", 
+      [`%${query.toLowerCase()}%`, limit, offset]
+    );
+
+    const itemCountResult = await pool.query(
+      "SELECT COUNT(*) as itemCount FROM cliente WHERE LOWER(nombre) LIKE ?", 
+      [`%${query.toLowerCase()}%`]
+    );
+    const itemCount = itemCountResult[0].itemCount;
+
+    const pageCount = Math.ceil(itemCount / limit);
+
+    res.json({
+      clientes: results,
+      pageCount,
+      itemCount,
+      currentPage: parseInt(page)
+    });
+  } catch (error) {
+    console.error("Error al buscar clientes:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
@@ -92,17 +116,15 @@ router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
       "SELECT nombre FROM cliente WHERE id_cliente = ?",
       [id_cliente]
     );
-    console.log(nombre);
-    if (!nombre) {
+    if (!nombre.length) {
       throw new Error("Cliente no encontrado");
     }
 
-    // Obtener facturas del cliente
     let facturas = await pool.query(
       "SELECT id_factura FROM factura WHERE id_cliente = ?",
       [id_cliente]
     );
-    // Eliminar todos los registros en pedido_producto relacionados con las facturas del cliente
+
     for (let i = 0; i < facturas.length; i++) {
       await pool.query("DELETE FROM pedido_producto WHERE id_factura = ?", [
         facturas[i].id_factura,
@@ -112,13 +134,11 @@ router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
       );
     }
 
-    // Eliminar todas las facturas del cliente
     await pool.query("DELETE FROM factura WHERE id_cliente = ?", [id_cliente]);
 
-    // Eliminar el cliente
     await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
 
-    req.flash("success", `El cliente ${nombre} ha sido eliminado exitosamente`);
+    req.flash("success", `El cliente ${nombre[0].nombre} ha sido eliminado exitosamente`);
     res.redirect("/cliente");
   } catch (err) {
     console.error("Error ejecutando las consultas:", err);
@@ -133,22 +153,19 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
     "SELECT * FROM cliente WHERE id_cliente = ?",
     [id]
   );
-  console.log(cliente);
   res.render("cliente/edit", { cliente: cliente[0] });
 });
 
 router.post("/edit/:id", isLoggedIn, async (req, res) => {
   const { id } = req.params;
   const { nombre, nit, telefono, direccion } = req.body;
-  const newCliente = {
-    nombre,
-    nit,
-    telefono,
-    direccion,
-  };
+  const newCliente = { nombre, nit, telefono, direccion };
+
   const validarCliente = await pool.query(
-    `SELECT  nombre, nit, telefono, direccion WHERE id_cliente = ${id}`
+    "SELECT nombre, nit, telefono, direccion FROM cliente WHERE id_cliente = ?",
+    [id]
   );
+
   if (
     validarCliente[0].nombre === newCliente.nombre &&
     validarCliente[0].nit === newCliente.nit &&
@@ -169,9 +186,5 @@ router.post("/edit/:id", isLoggedIn, async (req, res) => {
     res.redirect("/Cliente");
   }
 });
-
-
-
-
 
 module.exports = router;

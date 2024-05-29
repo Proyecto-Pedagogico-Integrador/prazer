@@ -39,6 +39,12 @@
                     <br>
                     <form action="/producto/edit/{{producto.id_producto}}" method="POST">
                         <div class="form-group">
+                            <h6 style="text-align: left;">Código de barras*</h6>
+                            <input type="text" name="nombre" class="form-control" autofocus
+                                value="{{producto.nombre}}" 
+                                onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32" maxlength="45" required>
+                        </div>
+                        <div class="form-group">
                             <h6 style="text-align: left;">Nombre*</h6>
                             <input type="text" name="nombre" class="form-control" autofocus
                                 value="{{producto.nombre}}" 

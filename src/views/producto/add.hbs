@@ -38,6 +38,12 @@
                     <br>
                     <form id="productoForm" action="/producto/add" method="POST">
                         <div class="form-group">
+                            <h6 style="text-align: left;">Código de barras*</h6>
+                            <span id="nombreMensaje"></span>
+                            <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
+                                autofocus required>
+                        </div>
+                        <div class="form-group">
                             <h6 style="text-align: left;">Nombre*</h6>
                             <span id="nombreMensaje"></span>
                             <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
@@ -49,7 +55,7 @@
                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
                         </div>
                         <div class="form-group">
-                            <h6 style="text-align: left;">Peso*</h6>
+                            <h6 style="text-align: left;">Peso gr*</h6>
                             <input type="number" name="peso" class="form-control" min="1"
                            onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
                         </div>

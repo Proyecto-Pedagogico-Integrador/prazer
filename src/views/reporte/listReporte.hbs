@@ -16,13 +16,16 @@
                 <form id="formBuscar">
                     <label for="fecha">Selecciona un rango de fechas:</label>
                     <br>
+                    <label>Fecha inicial</label>
+                    <label style="margin-left: 4%;">Fecha final</label>
+                    <br>
                     <input type="date" id="fechaInicio" name="fechaInicio" max="">
                     <input type="date" id="fechaFin" name="fechaFin" max="">
-                    <button id="guardarBtn" disabled>Guardar</button>
+                    <button style="background-color: darkcyan; padding: 1%; color: white" id="guardarBtn" disabled>Guardar</button>
                 </form>
                 <br>
                 <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
-                    <thead class="bg-dark text-white">
+                    <thead style="background-color: darkcyan; color: white">
                         <tr class="text-center">
                             <th>ID FACTURA</th>
                             <th>CLIENTE</th>
@@ -102,7 +105,6 @@
                     fetchFacturas(fechaInicio, fechaFin);
                 } else {
                     console.log('Invalid date range');
-                    //Colocar mensaje de rango de fechas invalido
                 }
             });
 

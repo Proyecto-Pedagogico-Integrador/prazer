@@ -1,175 +1,139 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const pool = require("../database");
+const { isLoggedIn } = require("../lib/auth");
 
-const pool = require('../database');
-const { isLoggedIn } = require('../lib/auth');
-
-router.get('/add', (req, res) => {
-    res.render('producto/add');
-});
-
-router.post("/add", async (req, res) => {
-    try {
-        const { nombre, precio, peso, cantidad } = req.body
-        const newProducto = {
-            nombre, 
-            precio, 
-            peso, 
-            cantidad
-        }
-        const nombreWithoutSpaces = nombre.replace(/\s/g, '').toLowerCase();
-
-        const validarProducto = await pool.query(`SELECT LOWER(REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '')) as nombre, precio, peso,cantidad FROM producto WHERE LOWER(REPLACE(TRIM(BOTH ' ' FROM nombre), ' ', '')) = '${nombreWithoutSpaces}'`);
-        console.log('validarProducto',validarProducto);
-        console.log('newProducto',nombreWithoutSpaces);
-        if (validarProducto.length > 0){
-            if (validarProducto[0].nombre === nombreWithoutSpaces){
-                req.flash('message', 'Producto YA EXISTE');
-                res.redirect('/producto');}
-        }else{
-            await pool.query('INSERT INTO producto set ?',[newProducto]);
-            req.flash('success', 'Producto guardado exitosamente');
-            res.redirect('/producto');
-        }
-       
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-router.get('/:page?', async (req, res) => {
-    try {
-        const limit = 5;
-        const currentPage = req.params.page ? parseInt(req.params.page) : 1;
-        const offset = (currentPage - 1) * limit;
-
-        const [results, itemCount] = await Promise.all([
-            pool.query('SELECT * FROM producto LIMIT ? OFFSET ?', [limit, offset]),
-            pool.query('SELECT COUNT(*) as itemCount FROM producto')
-        ]);
-
-        const pageCount = Math.ceil(itemCount[0].itemCount / limit);
-
-        res.render('producto/list', {
-            producto: results,
-            pageCount,
-            itemCount: itemCount[0].itemCount,
-            currentPage,
-            pages: Array.from({ length: pageCount }, (_, i) => i + 1)
-        });
-    } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-});
-
-router.get('/delete/:id_producto', async (req, res) => {
-    const { id_producto } = req.params;
-     let productos = await pool.query(
-        "SELECT id_pedido FROM pedido_producto WHERE id_producto = ?",
-        [id_producto]
-      );
-      // Eliminar todos los registros en pedido_producto relacionados con las productos del cliente
-      for (let i = 0; i < productos.length; i++) {
-        await pool.query("DELETE FROM pedido_producto WHERE id_pedido = ?", [
-          productos[i].id_pedido,
-        ]);
-      }
-  
-    await pool.query('DELETE FROM producto WHERE id_producto = ?', [id_producto]);
-    req.flash('success', 'Producto eliminado exitosamente');
-    res.redirect('/producto');
-});
-
-router.get('/edit/:id', async (req, res) => {
-    const { id } = req.params;
-    const producto = await pool.query('SELECT * FROM producto WHERE id_producto = ?', [id]);
-    console.log(producto);
-    res.render('producto/edit', {producto: producto[0]});
-});
-
-
-router.post('/edit/:id', async (req, res) => {
-    const { id } = req.params;
-    const { nombre, precio, peso, cantidad } = req.body;
- 
-    const newProducto = {
-        nombre,
-        precio : parseInt(precio),
-        peso : parseInt(peso),
-        cantidad : parseInt(cantidad)
-    }
-
-    const validarProducto = await pool.query(`
-    SELECT 
-        nombre, 
-        precio, 
-        peso, 
-        cantidad 
-    FROM producto 
-    WHERE id_producto = ${id}`);
-    console.log('validarProducto:', validarProducto);
-    console.log('newProducto:', newProducto);
-
-    // Check if the properties of validarProducto match the properties of newProducto
-    if (
-        validarProducto[0].nombre === newProducto.nombre &&
-        validarProducto[0].precio === newProducto.precio &&
-        validarProducto[0].peso === newProducto.peso &&
-        validarProducto[0].cantidad === newProducto.cantidad
-    ) {
-        req.flash('message', 'Producto no ha cambiado');
-        res.redirect('/producto');
-    } else {
-        await pool.query('UPDATE producto SET ? WHERE id_producto = ?', [newProducto, id]);
-        req.flash('success', 'Producto actualizado exitosamente');
-        res.redirect('/producto');
-    }
-});
-
-
-// Ruta para obtener los datos de un producto por su ID
-router.get('/obtenerDatosProducto/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const producto = await pool.query('SELECT precio, peso, cantidad FROM producto WHERE id_producto = ?', [id]);
-        
-        if (producto.length > 0) {
-            res.json(producto[0]);
-        } else {
-            res.status(404).json({ error: 'Producto no encontrado' });
-        }
-    } catch (error) {
-        console.error('Error al obtener datos del producto:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-});
-
-router.get('/obtenerDatosProducto', async (req, res) => {
-    try {
-       
-        const producto = await pool.query('SELECT * FROM producto' );
-        res.json(producto);
-        
-    } catch (error) {
-        console.error('Error al obtener datos del producto:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
+router.get("/add", (req, res) => {
+  res.render("producto/add");
 });
 
 router.post("/validarNombre", async (req, res) => {
-    try {
-      const { nombre } = req.body;
-      const validarNombre = await pool.query(
-        `SELECT nombre FROM producto WHERE nombre = ?`,
-        [nombre]
-      );
-  
-      res.json({ existe: validarNombre.length > 0 });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Error en el servidor" });
-    }
-  });
+  try {
+    const { nombre } = req.body;
+    const validarNombre = await pool.query(
+      `SELECT nombre FROM producto WHERE nombre = ?`,
+      [nombre]
+    );
+
+    res.json({ existe: validarNombre.length > 0 });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
+router.post("/add", isLoggedIn, async (req, res) => {
+  try {
+    const { nombre, precio, peso, cantidad } = req.body;
+    const newProducto = { nombre, precio, peso, cantidad };
+    await pool.query("INSERT INTO producto SET ?", [newProducto]);
+    req.flash(
+      "success",
+      `El producto ${newProducto.nombre} ha sido creado exitosamente`
+    );
+    res.redirect("/producto");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    const { query = '', page = 1 } = req.query;
+    const limit = 5;
+    const offset = (page - 1) * limit;
+
+    const results = await pool.query(
+      "SELECT * FROM producto WHERE LOWER(nombre) LIKE ? LIMIT ? OFFSET ?", 
+      [`%${query.toLowerCase()}%`, limit, offset]
+    );
+
+    const itemCountResult = await pool.query(
+      "SELECT COUNT(*) as itemCount FROM producto WHERE LOWER(nombre) LIKE ?", 
+      [`%${query.toLowerCase()}%`]
+    );
+    const itemCount = itemCountResult[0].itemCount;
+
+    const pageCount = Math.ceil(itemCount / limit);
+
+    res.json({
+      productos: results,
+      pageCount,
+      itemCount,
+      currentPage: parseInt(page)
+    });
+  } catch (error) {
+    console.error("Error al buscar productos:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.get("/:page?", async (req, res) => {
+  try {
+    const limit = 5;
+    const currentPage = req.params.page ? parseInt(req.params.page) : 1;
+    const offset = (currentPage - 1) * limit;
+
+    const [results, itemCount] = await Promise.all([
+      pool.query("SELECT * FROM producto LIMIT ? OFFSET ?", [limit, offset]),
+      pool.query("SELECT COUNT(*) as itemCount FROM producto"),
+    ]);
+
+    const pageCount = Math.ceil(itemCount[0].itemCount / limit);
+
+    res.render("producto/list", {
+      producto: results,
+      pageCount,
+      itemCount: itemCount[0].itemCount,
+      currentPage,
+      pages: Array.from({ length: pageCount }, (_, i) => i + 1),
+    });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.get("/delete/:id_producto", async (req, res) => {
+  const { id_producto } = req.params;
+  try {
+    await pool.query("DELETE FROM producto WHERE id_producto = ?", [id_producto]);
+    req.flash("success", "Producto eliminado exitosamente");
+    res.redirect("/producto");
+  } catch (error) {
+    console.error("Error al eliminar producto:", error);
+    req.flash("error", "Hubo un error al intentar eliminar el producto");
+    res.redirect("/producto");
+  }
+});
+
+router.get("/edit/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const producto = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [id]);
+    res.render("producto/edit", { producto: producto[0] });
+  } catch (error) {
+    console.error("Error al obtener producto:", error);
+    req.flash("error", "Hubo un error al obtener el producto");
+    res.redirect("/producto");
+  }
+});
+
+router.post("/edit/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nombre, precio, peso, cantidad } = req.body;
+  const newProducto = { nombre, precio, peso, cantidad };
+
+  try {
+    await pool.query("UPDATE producto SET ? WHERE id_producto = ?", [newProducto, id]);
+    req.flash("success", "Producto actualizado exitosamente");
+    res.redirect("/producto");
+  } catch (error) {
+    console.error("Error al actualizar producto:", error);
+    req.flash("error", "Hubo un error al intentar actualizar el producto");
+    res.redirect("/producto");
+  }
+});
 
 module.exports = router;
