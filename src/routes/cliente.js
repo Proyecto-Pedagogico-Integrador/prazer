@@ -22,15 +22,15 @@ router.post("/validarNombre", async (req, res) => {
   }
 });
 
-router.post("/validarNit", async (req, res) => {
+router.post("/validarIdCliente", async (req, res) => {
   try {
-    const { nit } = req.body;
-    const validarNit = await pool.query(
-      `SELECT nit FROM cliente WHERE nit = ?`,
-      [nit]
+    const { id_cliente } = req.body;
+    const validarIdCliente = await pool.query(
+      `SELECT id_cliente FROM cliente WHERE id_cliente = ?`,
+      [id_cliente]
     );
 
-    res.json({ existe: validarNit.length > 0 });
+    res.json({ existe: validarIdCliente.length > 0 });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error en el servidor" });
@@ -39,8 +39,8 @@ router.post("/validarNit", async (req, res) => {
 
 router.post("/add", isLoggedIn, async (req, res) => {
   try {
-    const { nombre, nit, telefono, direccion } = req.body;
-    const newCliente = { nombre, nit, telefono, direccion };
+    const { id_cliente, nombre, telefono, direccion } = req.body;
+    const newCliente = { id_cliente, nombre, telefono, direccion };
     await pool.query("INSERT INTO cliente set ?", [newCliente]);
     req.flash(
       "success",
@@ -54,17 +54,17 @@ router.post("/add", isLoggedIn, async (req, res) => {
 
 router.get("/search", async (req, res) => {
   try {
-    const { query = '', page = 1 } = req.query;
+    const { query = "", page = 1 } = req.query;
     const limit = 5;
     const offset = (page - 1) * limit;
 
     const results = await pool.query(
-      "SELECT * FROM cliente WHERE LOWER(nombre) LIKE ? LIMIT ? OFFSET ?", 
+      "SELECT * FROM cliente WHERE LOWER(nombre) LIKE ? ORDER BY nombre ASC LIMIT ? OFFSET ?",
       [`%${query.toLowerCase()}%`, limit, offset]
     );
 
     const itemCountResult = await pool.query(
-      "SELECT COUNT(*) as itemCount FROM cliente WHERE LOWER(nombre) LIKE ?", 
+      "SELECT COUNT(*) as itemCount FROM cliente WHERE LOWER(nombre) LIKE ?",
       [`%${query.toLowerCase()}%`]
     );
     const itemCount = itemCountResult[0].itemCount;
@@ -75,7 +75,7 @@ router.get("/search", async (req, res) => {
       clientes: results,
       pageCount,
       itemCount,
-      currentPage: parseInt(page)
+      currentPage: parseInt(page),
     });
   } catch (error) {
     console.error("Error al buscar clientes:", error);
@@ -90,7 +90,10 @@ router.get("/:page?", async (req, res) => {
     const offset = (currentPage - 1) * limit;
 
     const [results, itemCount] = await Promise.all([
-      pool.query("SELECT * FROM cliente LIMIT ? OFFSET ?", [limit, offset]),
+      pool.query(
+        "SELECT id_cliente, nombre, telefono, direccion FROM cliente ORDER BY nombre ASC LIMIT ? OFFSET ? ",
+        [limit, offset]
+      ),
       pool.query("SELECT COUNT(*) as itemCount FROM cliente"),
     ]);
 
@@ -138,7 +141,10 @@ router.get("/delete/:id_cliente", isLoggedIn, async (req, res) => {
 
     await pool.query("DELETE FROM cliente WHERE id_cliente = ?", [id_cliente]);
 
-    req.flash("success", `El cliente ${nombre[0].nombre} ha sido eliminado exitosamente`);
+    req.flash(
+      "success",
+      `El cliente ${nombre[0].nombre} ha sido eliminado exitosamente`
+    );
     res.redirect("/cliente");
   } catch (err) {
     console.error("Error ejecutando las consultas:", err);
@@ -158,17 +164,17 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
 
 router.post("/edit/:id", isLoggedIn, async (req, res) => {
   const { id } = req.params;
-  const { nombre, nit, telefono, direccion } = req.body;
-  const newCliente = { nombre, nit, telefono, direccion };
+  const { id_cliente, nombre, telefono, direccion } = req.body;
+  const newCliente = { id_cliente, nombre, telefono, direccion };
 
   const validarCliente = await pool.query(
-    "SELECT nombre, nit, telefono, direccion FROM cliente WHERE id_cliente = ?",
+    "SELECT  id_cliente, nombre, telefono, direccion FROM cliente WHERE id_cliente = ?",
     [id]
   );
 
   if (
     validarCliente[0].nombre === newCliente.nombre &&
-    validarCliente[0].nit === newCliente.nit &&
+    validarCliente[0].id_cliente === newCliente.id_cliente &&
     validarCliente[0].telefono === newCliente.telefono &&
     validarCliente[0].direccion === newCliente.direccion
   ) {

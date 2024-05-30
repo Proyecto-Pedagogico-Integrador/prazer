@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +9,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
+
 <body>
   <div class="container p-4">
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
       <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
-        <a class="btn btn-outline-success" href="/factura/listFactura">
+        <a class="btn btn-outline-success" href="/factura">
           <span class="icon text-dark-50">
             <i class="fas fa-arrow-left"></i>
           </span>
           <span class="text"></span>
-        </a>         
+        </a>
       </span>
       <div class="table-container">
         <table class="resumen-table">
@@ -66,7 +68,7 @@
             </tr>
             <tr>
               <td colspan="5"><b>Observaciones</b></td>
-              <td colspan="2"><b>TOTAL</b></td>
+              <td colspan="2"><b>TOTAL SIN IVA</b></td>
               {{#each total}}
               <td>{{total}}</td>
               {{/each}}
@@ -77,9 +79,8 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td colspan="2"><b>TOTAL</b></td>
+              <td>{{total_iva}}</td>
             </tr>
           </tbody>
         </table>
@@ -89,10 +90,11 @@
   </div>
 </body>
 <script>
-    document.querySelectorAll('.printbutton').forEach(function(element) {
-    element.addEventListener('click', function() {
-        print();
+  document.querySelectorAll('.printbutton').forEach(function (element) {
+    element.addEventListener('click', function () {
+      print();
     });
-});
+  });
 </script>
+
 </html>

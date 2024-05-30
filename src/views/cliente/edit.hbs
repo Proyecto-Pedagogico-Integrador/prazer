@@ -50,12 +50,12 @@
                                 <input type="text" name="id_cliente" class="form-control" placeholder="nit"
                                     value="{{cliente.id_cliente}}"
                                     onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode == 45)"
-                                    minlength="8" maxlength="11" required>
+                                    minlength="8" maxlength="11" autofocus required>
                             </div>
                             <div class="form-group">
                                 <h6 style="text-align: left;">Nombre*</h6>
                                 <input type="text" name="nombre" class="form-control" placeholder="nombre"
-                                    value="{{cliente.nombre}}" maxlength="45" autofocus required>
+                                    value="{{cliente.nombre}}" maxlength="45"  required>
                             </div>
                             
                             <div class="form-group">

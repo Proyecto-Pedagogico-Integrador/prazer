@@ -22,15 +22,15 @@ router.post("/validarNombre", async (req, res) => {
   }
 });
 
-router.post("/validarCodigo", async (req, res) => {
+router.post("/validarIdProducto", async (req, res) => {
   try {
-    const { codigo } = req.body;
-    const validarCodigo = await pool.query(
+    const { id_producto } = req.body;
+    const validarIdProducto = await pool.query(
       `SELECT id_producto FROM producto WHERE id_producto = ?`,
-      [codigo]
+      [id_producto]
     );
 
-    res.json({ existe: validarCodigo.length > 0 });
+    res.json({ existe: validarIdProducto.length > 0 });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error en el servidor" });
@@ -39,8 +39,9 @@ router.post("/validarCodigo", async (req, res) => {
 
 router.post("/add", isLoggedIn, async (req, res) => {
   try {
-    const { nombre, precio, peso, cantidad } = req.body;
-    const newProducto = { nombre, precio, peso, cantidad };
+    const { id_producto, nombre, precio, peso, cantidad } = req.body;
+    const newProducto = { id_producto, nombre, precio, peso, cantidad };
+    console.log(newProducto)
     await pool.query("INSERT INTO producto SET ?", [newProducto]);
     req.flash(
       "success",
@@ -55,17 +56,17 @@ router.post("/add", isLoggedIn, async (req, res) => {
 
 router.get("/search", async (req, res) => {
   try {
-    const { query = '', page = 1 } = req.query;
+    const { query = "", page = 1 } = req.query;
     const limit = 5;
     const offset = (page - 1) * limit;
 
     const results = await pool.query(
-      "SELECT * FROM producto WHERE LOWER(nombre) LIKE ? LIMIT ? OFFSET ?", 
+      "SELECT id_producto, nombre, precio, peso, cantidad FROM producto WHERE LOWER(nombre) LIKE ? ORDER BY nombre LIMIT ? OFFSET ?",
       [`%${query.toLowerCase()}%`, limit, offset]
     );
 
     const itemCountResult = await pool.query(
-      "SELECT COUNT(*) as itemCount FROM producto WHERE LOWER(nombre) LIKE ?", 
+      "SELECT COUNT(*) as itemCount FROM producto WHERE LOWER(nombre) LIKE ?",
       [`%${query.toLowerCase()}%`]
     );
     const itemCount = itemCountResult[0].itemCount;
@@ -76,7 +77,7 @@ router.get("/search", async (req, res) => {
       productos: results,
       pageCount,
       itemCount,
-      currentPage: parseInt(page)
+      currentPage: parseInt(page),
     });
   } catch (error) {
     console.error("Error al buscar productos:", error);
@@ -113,7 +114,9 @@ router.get("/:page?", async (req, res) => {
 router.get("/delete/:id_producto", async (req, res) => {
   const { id_producto } = req.params;
   try {
-    await pool.query("DELETE FROM producto WHERE id_producto = ?", [id_producto]);
+    await pool.query("DELETE FROM producto WHERE id_producto = ?", [
+      id_producto,
+    ]);
     req.flash("success", "Producto eliminado exitosamente");
     res.redirect("/producto");
   } catch (error) {
@@ -126,7 +129,10 @@ router.get("/delete/:id_producto", async (req, res) => {
 router.get("/edit/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const producto = await pool.query("SELECT * FROM producto WHERE id_producto = ?", [id]);
+    const producto = await pool.query(
+      "SELECT * FROM producto WHERE id_producto = ?",
+      [id]
+    );
     res.render("producto/edit", { producto: producto[0] });
   } catch (error) {
     console.error("Error al obtener producto:", error);
@@ -137,11 +143,14 @@ router.get("/edit/:id", async (req, res) => {
 
 router.post("/edit/:id", async (req, res) => {
   const { id } = req.params;
-  const { nombre, precio, peso, cantidad } = req.body;
-  const newProducto = { nombre, precio, peso, cantidad };
+  const { id_producto, nombre, precio, peso, cantidad } = req.body;
+  const newProducto = { id_producto, nombre, precio, peso, cantidad };
 
   try {
-    await pool.query("UPDATE producto SET ? WHERE id_producto = ?", [newProducto, id]);
+    await pool.query("UPDATE producto SET ? WHERE id_producto = ?", [
+      newProducto,
+      id,
+    ]);
     req.flash("success", "Producto actualizado exitosamente");
     res.redirect("/producto");
   } catch (error) {

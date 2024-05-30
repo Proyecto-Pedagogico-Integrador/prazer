@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,14 @@
     <link rel="stylesheet" href="/img/styles/producto.css">
     <style>
         .container.p-4 {
-            padding: 2rem !important; 
-            margin: 0 auto !important; 
-            max-width: 100%; 
+            padding: 2rem !important;
+            margin: 0 auto !important;
+            max-width: 100%;
         }
-        
+
         .card {
-            margin: 0 auto; 
-            max-width: 400px; 
+            margin: 0 auto;
+            max-width: 400px;
         }
     </style>
 </head>
@@ -39,27 +40,30 @@
                     <form id="productoForm" action="/producto/add" method="POST">
                         <div class="form-group">
                             <h6 style="text-align: left;">Código de barras*</h6>
-                            <span id="codigoMensaje"></span>
-                            <input type="text" name="codigo" id="codigo" class="form-control" oninput="limitarLongitud(this, 13)" required>
+                            <span id="idProductoMensaje"></span>
+                            <input type="text" name="id_producto" id="id_producto" class="form-control"
+                                oninput="limitarLongitud(this, 13)" autofocus required>
                         </div>
 
                         <div class="form-group">
                             <h6 style="text-align: left;">Nombre*</h6>
                             <span id="nombreMensaje"></span>
-                            <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
-                                autofocus required>
+                            <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45" required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Precio*</h6>
-                            <input type="text" name="precio" class="form-control" oninput="limitarLongitud(this, 10)" required>
+                            <input type="text" name="precio" class="form-control" oninput="limitarLongitud(this, 10)"
+                                required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Peso gr*</h6>
-                            <input type="number" name="peso" class="form-control" oninput="limitarLongitud(this, 4)" required>
+                            <input type="number" name="peso" class="form-control" oninput="limitarLongitud(this, 4)"
+                                required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Cantidad*</h6>
-                            <input type="number" name="cantidad" class="form-control" oninput="limitarLongitud(this, 4)"required>
+                            <input type="number" name="cantidad" class="form-control" oninput="limitarLongitud(this, 4)"
+                                required>
                         </div>
                         <div class="form-group">
                             <button id="guardarBtn" class="btn btn-success btn-block" disabled>
@@ -75,10 +79,10 @@
 
 <script>
     function limitarLongitud(elemento, maximoCaracteres) {
-    if (elemento.value.length > maximoCaracteres) {
-        elemento.value = elemento.value.slice(0, maximoCaracteres);
+        if (elemento.value.length > maximoCaracteres) {
+            elemento.value = elemento.value.slice(0, maximoCaracteres);
+        }
     }
-}
     async function validarNombre() {
         const nombre = document.getElementById('nombre').value;
 
@@ -112,38 +116,38 @@
         habilitarODeshabilitarBotonGuardar();
     }
 
-    async function validarCodigo() {
-    const codigo = document.getElementById('codigo').value;
+    async function validarIdProducto() {
+        const id_producto = document.getElementById('id_producto').value;
 
-    // Si el campo está vacío, no se muestra ningún mensaje
-    if (!codigo.trim()) {
-        document.getElementById('codigoMensaje').innerText = '';
-        return;
+        // Si el campo está vacío, no se muestra ningún mensaje
+        if (!id_producto.trim()) {
+            document.getElementById('idProductoMensaje').innerText = '';
+            return;
+        }
+
+        // Realiza una solicitud AJAX al servidor para verificar el código de barras
+        const response = await fetch('/producto/validarIdProducto', { // Cambiar la URL aquí
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id_producto })
+        });
+
+        const data = await response.json();
+        // Realizar ajuste de los mensajes
+        // Muestra el mensaje de validación junto al campo de código
+        const idProductoMensaje = document.getElementById('idProductoMensaje');
+        if (data.existe) {
+            idProductoMensaje.innerText = 'Código no disponible';
+            idProductoMensaje.style.color = 'red';
+        } else {
+            idProductoMensaje.innerText = 'Codigo disponible';
+            idProductoMensaje.style.color = 'green';
+        }
+
+        habilitarODeshabilitarBotonGuardar();
     }
-
-    // Realiza una solicitud AJAX al servidor para verificar el código de barras
-    const response = await fetch('/producto/validarCodigo', { // Cambiar la URL aquí
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ codigo })
-    });
-
-    const data = await response.json();
-    // Realizar ajuste de los mensajes
-    // Muestra el mensaje de validación junto al campo de código
-    const codigoMensaje = document.getElementById('codigoMensaje');
-    if (data.existe) {
-        codigoMensaje.innerText = 'Código no disponible';
-        codigoMensaje.style.color = 'red';
-    } else {
-        codigoMensaje.innerText = 'Codigo disponible';
-        codigoMensaje.style.color = 'green';
-    }
-
-    habilitarODeshabilitarBotonGuardar();
-}
 
 
     // Tener en cuenta que si el mensaje que se cambie, en estos momentos el vas bien, se debe actualizar en todas partes como en la linea 94,125,132 y 133
@@ -156,7 +160,7 @@
     window.onload = function () {
         // Agrega eventos de input a los campos de nombre y NIT
         document.getElementById('nombre').addEventListener('input', validarNombre);
-        document.getElementById('codigo').addEventListener('input', validarCodigo);
+        document.getElementById('id_producto').addEventListener('input', validarIdProducto);
     };
 </script>
 <footer>
@@ -164,4 +168,4 @@
     <h6>312-695-0222</h6>
     <h5>Dirección</h5>
     <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
-  </footer>
+</footer>

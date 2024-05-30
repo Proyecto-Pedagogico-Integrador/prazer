@@ -27,7 +27,8 @@
             <table id="tablaArticulos" class="table mt-2 table-bordered table-striped">
                 <thead style="background-color: darkcyan; color: white">
                     <tr class="text-center">
-                        <th>ID FACTURA</th>
+                        <th>CLIENTE</th>
+                        <th>NIT</th>
                         <th>FECHA</th>
                         <th>IVA</th>
                         <th>TOTAL</th>
@@ -38,15 +39,16 @@
                 <tbody>
                     {{#each factura}}
                     <tr style="text-align: center;">
-                        <td>{{id_factura}}</td>
+                        <td>{{nombre_cliente}}</td>
+                        <td>{{nit}}</td>
                         <td>{{formatDate fecha_factura}}</td>
                         <td>{{iva}}</td>
                         <td>{{total}}</td>
-                        <td>{{id_empleado}}</td>
+                        <td>{{empleado}}</td>
                         <td class="text-center">
                             <span class="text" tabindex="0" data-placement="top" title="Factura" 
                                 style="display: inline-block">
-                                <a href="/cliente/showFactura/{{id_factura}}" >
+                                <a href="/factura/showFactura/{{id_factura}}" >
                                     <button type="button" class="btn btn-info">Ver</button>
                                 </a>
                             </span> 
@@ -57,7 +59,7 @@
                     <div class="col-md-4 mx-auto">
                         <div class="card card-body text-center">
                             <p>No hay facturas por el momento :C</p>
-                            <a href="/cliente/addFactura/{{cliente}}">Crea Uno!</a>
+                            <a href="/factura/addFactura/{{cliente}}">Crea Uno!</a>
                         </div>
                     </div>
                     {{/each}}

@@ -41,18 +41,18 @@
                         <form id="clienteForm" action="/cliente/add" method="POST">
                             <div class="form-group">
                                 <h6 style="text-align: left;">NIT*</h6>
-                                <span id="nitMensaje"></span>
-                                <input type="text" name="nit" id="nit" class="form-control"
+                                <span id="idClienteMensaje"></span>
+                                <input type="text" name="id_cliente" id="id_cliente" class="form-control"
                                     onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode == 45)"
-                                    minlength="8" maxlength="11" required>
+                                    minlength="8" maxlength="11" autofocus required>
                             </div>
                             <div class="form-group">
                                 <h6 style="text-align: left;">Nombre*</h6>
                                 <span id="nombreMensaje"></span>
                                 <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
-                                    autofocus required>
+                                    required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <h6 style="text-align: left;">Teléfono*</h6>
                                 <input type="text" name="telefono" class="form-control"
@@ -111,34 +111,34 @@
             habilitarODeshabilitarBotonGuardar();
         }
 
-        async function validarNit() {
-            const nit = document.getElementById('nit').value;
+        async function validarIdCliente() {
+            const id_cliente = document.getElementById('id_cliente').value;
 
             // Si el campo está vacío, no se muestra ningún mensaje
-            if (!nit.trim()) {
-                document.getElementById('nitMensaje').innerText = '';
+            if (!id_cliente.trim()) {
+                document.getElementById('idClienteMensaje').innerText = '';
                 return;
             }
 
             // Realiza una solicitud AJAX al servidor para verificar el NIT
-            const response = await fetch('/cliente/validarNit', {
+            const response = await fetch('/cliente/validarIdCliente', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ nit })
+                body: JSON.stringify({ id_cliente })
             });
 
             const data = await response.json();
             // Realizar ajuste de los mensajes
             // Muestra el mensaje de validación junto al campo de NIT
-            const nitMensaje = document.getElementById('nitMensaje');
+            const idClienteMensaje = document.getElementById('idClienteMensaje');
             if (data.existe) {
-                nitMensaje.innerText = 'NIT no disponible';
-                nitMensaje.style.color = 'red';
+                idClienteMensaje.innerText = 'NIT no disponible';
+                idClienteMensaje.style.color = 'red';
             } else {
-                nitMensaje.innerText = 'NIT disponible';
-                nitMensaje.style.color = 'green';
+                idClienteMensaje.innerText = 'NIT disponible';
+                idClienteMensaje.style.color = 'green';
             }
 
             habilitarODeshabilitarBotonGuardar();
@@ -146,7 +146,7 @@
         // Tener en cuenta que si el mensaje que se cambie, en estos momentos el vas bien, se debe actualizar en todas partes como en la linea 94,125,132 y 133
         function habilitarODeshabilitarBotonGuardar() {
             const nombreValido = document.getElementById('nombreMensaje').innerText === 'Nombre disponible';
-            const nitValido = document.getElementById('nitMensaje').innerText === 'NIT disponible';
+            const nitValido = document.getElementById('idClienteMensaje').innerText === 'NIT disponible';
             document.getElementById('guardarBtn').disabled = !(nombreValido && nitValido);
         }
 
@@ -154,13 +154,13 @@
         window.onload = function () {
             // Agrega eventos de input a los campos de nombre y NIT
             document.getElementById('nombre').addEventListener('input', validarNombre);
-            document.getElementById('nit').addEventListener('input', validarNit);
+            document.getElementById('id_cliente').addEventListener('input', validarIdCliente);
         };
     </script>
     <footer>
-    <h5>Teléfono</h5>
-    <h6>312-695-0222</h6>
-    <h5>Dirección</h5>
-    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
-  </footer>
+        <h5>Teléfono</h5>
+        <h6>312-695-0222</h6>
+        <h5>Dirección</h5>
+        <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+    </footer>
 </body>

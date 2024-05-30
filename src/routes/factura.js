@@ -6,17 +6,54 @@ const { isLoggedIn } = require("../lib/auth");
 
 router.get("/", isLoggedIn, async (req, res) => {
   const factura = await pool.query(
-    `SELECT 
-*
-      FROM factura`
+    `WITH base AS (
+      SELECT 
+          llave AS id_factura,
+          id_producto,
+          nombre_producto,
+          cantidad,
+          precio_unitario,
+          subtotal
+      FROM detalle_factura
+  ),
+  totales AS (
+      SELECT 
+          id_factura,
+          SUM(subtotal) * 0.19 AS iva,
+          SUM(subtotal) + (SUM(subtotal) * 0.19) AS total
+      FROM base
+      GROUP BY id_factura
+  )
+  SELECT 
+      a.nombre_cliente,
+      a.nit,
+      a.fecha_factura,
+      b.iva,
+      b.total,
+      a.empleado,
+      a.llave as id_factura
+  FROM detalle_factura a
+  INNER JOIN totales b 
+      ON a.llave = b.id_factura
+  GROUP BY 
+      a.nombre_cliente,
+      a.nit,
+      a.fecha_factura,
+      a.empleado,
+      a.llave,
+      b.iva,
+      b.total;
+  `
   );
   res.render("factura/listFactura", { factura });
 });
 
 router.get("/addFactura", async (req, res) => {
   try {
-    const productosList = await pool.query("SELECT * FROM producto");
-    const clienteList = await pool.query("SELECT * FROM cliente")
+    const productosList = await pool.query(
+      "SELECT * FROM producto where cantidad > 0"
+    );
+    const clienteList = await pool.query("SELECT * FROM cliente");
     res.render(`factura/addFactura`, { productosList, clienteList });
   } catch (error) {
     // Maneja el error aquí
@@ -33,7 +70,7 @@ router.post("/addFactura", async (req, res) => {
       cantidadBD,
       precio,
       nombreProducto,
-      row
+      row,
     } = req.body;
 
     const productosFiltrados = [];
@@ -151,11 +188,14 @@ router.post("/addFactura", async (req, res) => {
           precio_unitario,
           subtotal,
           total,
+          fecha_factura,
+          llave,
+          empleado,
           id_factura
       )
       SELECT
           c.nombre as nombre_cliente,
-          c.nit,
+          c.id_cliente as nit,
           c.direccion,
           pd.id_producto,
           p.nombre as nombre_producto,
@@ -163,6 +203,9 @@ router.post("/addFactura", async (req, res) => {
           p.precio as precio_unitario,
           (pd.cantidad_producto * p.precio) as subtotal,
           (pd.cantidad_producto * p.precio) as total,
+          '${fechaMySQL[0].fecha}' as fecha_factura,
+          ${productosPedido[0].ID_FACTURA} as llave,
+          '${req.user.username}' as empleado,
           ${productosPedido[0].ID_FACTURA} as id_factura
       FROM factura f
       INNER JOIN cliente c
@@ -193,16 +236,11 @@ router.get("/showFactura/:id_factura", async (req, res) => {
             nit,
             direccion
           FROM detalle_factura
-          WHERE id_factura = ?`,
+          WHERE llave = ?`,
       [id_factura]
     );
     console.log(cliente);
-    let base = await pool.query(
-      "SELECT id_cliente FROM cliente WHERE nit = ?",
-      [cliente[0].nit]
-    );
-    let row = base[0].id_cliente;
-    console.log(row);
+
     const productosList = await pool.query(
       `SELECT 
             id_producto,
@@ -211,7 +249,7 @@ router.get("/showFactura/:id_factura", async (req, res) => {
             precio_unitario,
             subtotal
         FROM detalle_factura
-        WHERE id_factura = ${id_factura}`
+        WHERE llave = ${id_factura}`
     );
 
     const total = await pool.query(
@@ -223,15 +261,22 @@ router.get("/showFactura/:id_factura", async (req, res) => {
                 precio_unitario,
                 subtotal
               FROM detalle_factura
-              WHERE id_factura = ${id_factura}
+              WHERE llave = ${id_factura}
             ) 
               SELECT 
                 SUM(subtotal) as total
               from base`
     );
+
+    const total_iva = total[0].total + total[0].total * 0.19;
     console.log(productosList);
     console.log(total);
-    res.render(`factura/showFactura`, { cliente, productosList, total, row });
+    res.render(`factura/showFactura`, {
+      cliente,
+      productosList,
+      total,
+      total_iva
+    });
   } catch (error) {
     // Maneja el error aquí
     console.error(error);
