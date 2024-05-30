@@ -7,15 +7,14 @@
   <title>Generar Pedido</title>
   <link rel="stylesheet" href="/img/styles/pedido.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <style>
     .form-control {
       border-radius: 5px;
-      /* Redondear los bordes */
       width: 100%;
-      /* Establecer el ancho al 100% */
       box-sizing: border-box;
-      /* Incluir el ancho del borde en el tamaño total */
+      text-align: center;
     }
 
     .dropbtn {
@@ -27,13 +26,11 @@
       cursor: pointer;
     }
 
-    /* Estilos para el contenedor del menú desplegable */
     .dropdown {
       position: relative;
       display: inline-block;
     }
 
-    /* Estilos para el contenido del menú desplegable */
     .dropdown-content {
       display: none;
       position: absolute;
@@ -43,7 +40,6 @@
       z-index: 1;
     }
 
-    /* Estilos para las opciones del menú desplegable */
     .dropdown-content a {
       color: black;
       padding: 12px 16px;
@@ -51,12 +47,10 @@
       display: block;
     }
 
-    /* Estilos para las opciones del menú desplegable al pasar el mouse sobre ellas */
     .dropdown-content a:hover {
       background-color: #f1f1f1;
     }
 
-    /* Estilos para el buscador */
     .search-bar {
       width: 100%;
       padding: 10px;
@@ -66,9 +60,50 @@
       border-radius: 4px;
     }
 
-    /* Mostrar el menú desplegable cuando el botón se haga clic */
     .dropdown:hover .dropdown-content {
       display: block;
+    }
+
+    /* Centrando el texto dentro de los inputs de la tabla */
+    #tablaProductos input {
+      text-align: center;
+    }
+
+    #tablaProductos input {
+      text-align: center;
+      background-color: transparent;
+      border: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Estilo del select */
+    .cliente-select {
+      width: 100%; /* 50% del ancho menos el espacio entre el select y el buscador */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      margin-bottom: 10px;
+      float: left; /* Alinear a la izquierda */
+    }
+
+    .cliente-select:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    /* Estilo para el buscador */
+    #inputBusqueda {
+      width: calc(50% - 5px); /* 50% del ancho menos el espacio entre el select y el buscador */
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      margin-bottom: 10px;
+      float: right; /* Alinear a la derecha */
     }
   </style>
 </head>
@@ -76,7 +111,6 @@
 <body>
 
   <div class="container p-4">
-
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
       <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
         <a class="btn btn-outline-success" href="/factura">
@@ -88,10 +122,11 @@
       </span>
 
       <form action="/factura/addFactura" method="POST">
-        <h3 style="text-align: center;">Generar Pedido</h3>
+        <h3 style="display: inline-block; margin-left: 42%">Generar Pedido</h3>
+        <br>
         <br>
         <div class="dropdown">
-
+          
           <select class="cliente-select" name="row">
             <option value="" disabled selected>Seleccione un cliente</option>
             {{#each clienteList}}
@@ -100,11 +135,9 @@
           </select>
         </div>
 
-
-        <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar producto..."
-          style="max-width: 300px;" />
+        <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar producto..." style="max-width: 300px;" />
         <table class="table" id="tablaProductos">
-          <thead>
+          <thead style="background-color: darkcyan; color: white">
             <tr class="text-center">
               <th>PRODUCTO</th>
               <th>DISPONIBLE</th>
@@ -120,20 +153,17 @@
                 <input type="text" readonly="readonly" name="nombreProducto" value="{{nombre}}" />
               </td>
               <td>
-                <input type="number" readonly="readonly" name="cantidadBD" value="{{cantidad}}" min="0"
-                  id="cantidadBD" />
+                <input type="number" readonly="readonly" name="cantidadBD" value="{{cantidad}}" min="0" id="cantidadBD" />
               </td>
               <td>
                 <input type="number" readonly="readonly" name="precio" value="{{precio}}" min="0" />
               </td>
               <td>
-                <input type="number" name="cantidadProductosSeleccionados" value="" min="0" oninput="validarCantidad()"
-                  id="cantidadProductosSeleccionados" />
-                <span class="nombreMensaje"></span>
+                <input type="number" name="cantidadProductosSeleccionados" value="" min="0" oninput="validarCantidad()" id="cantidadProductosSeleccionados" />
               </td>
               <td>
-                <input type="checkbox" name="productosSeleccionados" style="display:none;" value="{{id_producto}}"
-                  checked />
+                <span class="nombreMensaje"></span>
+                <input type="checkbox" name="productosSeleccionados" style="display:none;" value="{{id_producto}}" checked />
               </td>
             </tr>
             {{/each}}
@@ -151,32 +181,37 @@
     document.addEventListener('DOMContentLoaded', function () {
       guardarBtn.disabled = true;
     });
+
     async function validarCantidad() {
       const cantidadBDs = document.querySelectorAll('[name="cantidadBD"]');
       const cantidadProductosSeleccionadosList = document.querySelectorAll('[name="cantidadProductosSeleccionados"]');
       const nombreMensajes = document.querySelectorAll('.nombreMensaje');
       let allValid = true;
+
       for (let i = 0; i < cantidadBDs.length; i++) {
         if (!cantidadProductosSeleccionadosList[i].value.trim()) {
-          nombreMensajes[i].innerText = '';
+          nombreMensajes[i].innerHTML = '';
           continue;
         }
         const cantidadBD = parseInt(cantidadBDs[i].value);
         const cantidadProductosSeleccionados = parseInt(cantidadProductosSeleccionadosList[i].value);
+
         if (cantidadBD < cantidadProductosSeleccionados) {
-          nombreMensajes[i].innerText = 'Se ha excedido';
+          nombreMensajes[i].innerHTML = '<i class="fas fa-exclamation-circle" style="color: red;"></i>';
           allValid = false;
         } else {
-          nombreMensajes[i].innerText = 'Todo OK';
+          nombreMensajes[i].innerHTML = '<i class="fas fa-check-circle" style="color: green;"></i>';
         }
       }
       habilitarODeshabilitarBotonGuardar(allValid);
     }
+
     function habilitarODeshabilitarBotonGuardar(allValid) {
       let allOk = true;
       const nombreMensajes = document.querySelectorAll('.nombreMensaje');
+
       for (let i = 0; i < nombreMensajes.length; i++) {
-        if (nombreMensajes[i].innerText !== 'Todo OK' && nombreMensajes[i].innerText !== '') {
+        if (nombreMensajes[i].innerHTML !== '<i class="fas fa-check-circle" style="color: green;"></i>' && nombreMensajes[i].innerHTML !== '') {
           allOk = false;
           break;
         }
@@ -185,14 +220,12 @@
     }
 
     window.onload = function () {
-      // Agregar evento de escucha para el campo de búsqueda
       const inputBusqueda = document.getElementById('inputBusqueda');
       inputBusqueda.addEventListener('input', function () {
         const filter = this.value.toLowerCase();
         const rows = document.querySelectorAll('#tablaProductos tbody tr');
 
         rows.forEach(row => {
-          // Obtener el valor del input dentro de la primera celda (producto)
           const producto = row.querySelector('td:nth-child(1) input').value.toLowerCase();
           if (producto.includes(filter)) {
             row.style.display = '';
@@ -202,9 +235,6 @@
         });
       });
     };
-
-
-
   </script>
   <footer>
     <h5>Teléfono</h5>
