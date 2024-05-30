@@ -76,6 +76,7 @@
 <body>
 
   <div class="container p-4">
+
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded" style="margin-left: auto; margin-right: auto;">
       <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
         <a class="btn btn-outline-success" href="/factura">
@@ -86,47 +87,61 @@
         </a>
       </span>
 
-      <br action="/cliente/addFactura" method="POST">
-      <h3 style="text-align: center;">Generar Pedido</h3>
-      <br>
-      <div class="dropdown">
-
-        <select class="cliente-select">
-          <option value="" disabled selected>Seleccione un cliente</option>
-          {{#each clienteList}}
-          <option value="{{id_producto}}">{{nombre}}</option>
-          {{/each}}
-        </select>
-
+      <form action="/factura/addFactura" method="POST">
+        <h3 style="text-align: center;">Generar Pedido</h3>
         <br>
-      </div>
+        <div class="dropdown">
 
-      <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar producto..."
-        style="max-width: 300px;" />
-      <table class="table" id="tablaProductos">
-        <thead>
-          <tr class="text-center">
-            <th>PRODUCTO</th>
-            <th>DISPONIBLE</th>
-            <th>PRECIO</th>
-            <th>CANTIDAD</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each productosList}}
-          <tr class="text-center">
-            <td>{{nombre}}</td>
-            <td>{{cantidad}}</td>
-            <td>{{precio}}</td>
-            <td contenteditable="true" class="form-control" oninput="validarCantidad()"></td>
-            <td style="display:none;">{{id_producto}}</td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-      <div class="btn-container">
-        <input class="btn btn-success btn-lg" type="submit" value="Enviar" id="guardarBtn" />
-      </div>
+          <select class="cliente-select" name="row">
+            <option value="" disabled selected>Seleccione un cliente</option>
+            {{#each clienteList}}
+            <option value="{{id_cliente}}">{{nombre}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+
+        <input type="text" id="inputBusqueda" class="form-control" placeholder="Buscar producto..."
+          style="max-width: 300px;" />
+        <table class="table" id="tablaProductos">
+          <thead>
+            <tr class="text-center">
+              <th>PRODUCTO</th>
+              <th>DISPONIBLE</th>
+              <th>PRECIO</th>
+              <th>CANTIDAD</th>
+              <th>VALIDACION</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each productosList}}
+            <tr class="text-center">
+              <td>
+                <input type="text" readonly="readonly" name="nombreProducto" value="{{nombre}}" />
+              </td>
+              <td>
+                <input type="number" readonly="readonly" name="cantidadBD" value="{{cantidad}}" min="0"
+                  id="cantidadBD" />
+              </td>
+              <td>
+                <input type="number" readonly="readonly" name="precio" value="{{precio}}" min="0" />
+              </td>
+              <td>
+                <input type="number" name="cantidadProductosSeleccionados" value="" min="0" oninput="validarCantidad()"
+                  id="cantidadProductosSeleccionados" />
+                <span class="nombreMensaje"></span>
+              </td>
+              <td>
+                <input type="checkbox" name="productosSeleccionados" style="display:none;" value="{{id_producto}}"
+                  checked />
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <div class="btn-container">
+          <input class="btn btn-success btn-lg" type="submit" value="Enviar" id="guardarBtn" />
+        </div>
       </form>
     </div>
   </div>
@@ -136,23 +151,18 @@
     document.addEventListener('DOMContentLoaded', function () {
       guardarBtn.disabled = true;
     });
-
     async function validarCantidad() {
       const cantidadBDs = document.querySelectorAll('[name="cantidadBD"]');
       const cantidadProductosSeleccionadosList = document.querySelectorAll('[name="cantidadProductosSeleccionados"]');
       const nombreMensajes = document.querySelectorAll('.nombreMensaje');
-
       let allValid = true;
-
       for (let i = 0; i < cantidadBDs.length; i++) {
-        if (!cantidadProductosSeleccionadosList[i].innerText.trim()) {
+        if (!cantidadProductosSeleccionadosList[i].value.trim()) {
           nombreMensajes[i].innerText = '';
           continue;
         }
-
-        const cantidadBD = parseInt(cantidadBDs[i].innerText);
-        const cantidadProductosSeleccionados = parseInt(cantidadProductosSeleccionadosList[i].innerText);
-
+        const cantidadBD = parseInt(cantidadBDs[i].value);
+        const cantidadProductosSeleccionados = parseInt(cantidadProductosSeleccionadosList[i].value);
         if (cantidadBD < cantidadProductosSeleccionados) {
           nombreMensajes[i].innerText = 'Se ha excedido';
           allValid = false;
@@ -160,10 +170,8 @@
           nombreMensajes[i].innerText = 'Todo OK';
         }
       }
-
       habilitarODeshabilitarBotonGuardar(allValid);
     }
-
     function habilitarODeshabilitarBotonGuardar(allValid) {
       let allOk = true;
       const nombreMensajes = document.querySelectorAll('.nombreMensaje');
@@ -176,7 +184,6 @@
       guardarBtn.disabled = !allOk || !allValid;
     }
 
-    // Llama a las funciones de validación al cargar la página
     window.onload = function () {
       // Agregar evento de escucha para el campo de búsqueda
       const inputBusqueda = document.getElementById('inputBusqueda');
@@ -185,7 +192,8 @@
         const rows = document.querySelectorAll('#tablaProductos tbody tr');
 
         rows.forEach(row => {
-          const producto = row.querySelector('td:nth-child(1)').innerText.toLowerCase();
+          // Obtener el valor del input dentro de la primera celda (producto)
+          const producto = row.querySelector('td:nth-child(1) input').value.toLowerCase();
           if (producto.includes(filter)) {
             row.style.display = '';
           } else {
@@ -194,8 +202,16 @@
         });
       });
     };
-  </script>
 
+
+
+  </script>
+  <footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>
 </body>
 
 </html>

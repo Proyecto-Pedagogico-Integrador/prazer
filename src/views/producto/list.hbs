@@ -15,11 +15,8 @@
                 <h3 style="display: inline-block; margin-left: 40%">Productos</h3>
                 <div class="flex-container">
                     <span class="text" tabindex="0" data-placement="top" title="Agregar" style="display: inline-block">
-                        <a class="btn btn-outline-success" href="/producto/add">
-                            <span class="icon text-dark-50">
-                                <i class="fas fa-plus"></i>
-                            </span>
-                            <span class="text"></span>
+                        <a href="/producto/add">
+                            <button type="button" class="btn btn-success">Agregar</button>
                         </a>
                     </span>
                     <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." style="max-width: 300px;">
@@ -73,19 +70,13 @@
                                 <td>${producto.cantidad}</td>
                                 <td class="text-center">
                                     <span class="text" tabindex="0" data-placement="top" title="Editar">
-                                        <a class="btn btn-warning" href="/producto/edit/${producto.id_producto}">
-                                            <span class="icon text-dark-50" >
-                                                <i class="fas fa-pen"> Editar</i>
-                                            </span>
-                                            <span class="text"></span>
+                                        <a href="/producto/edit/${producto.id_producto}" >
+                                            <button type="button" class="btn btn-warning">Editar</button>
                                         </a>
                                     </span>
                                     <span class="text" tabindex="0" data-placement="top" title="Eliminar">
-                                        <a class="btn btn-outline-danger" href="javascript:EliminarProducto(${producto.id_producto})">
-                                            <span class="icon text-dark-50">
-                                                <i class="fas fa-trash"></i>
-                                            </span>
-                                            <span class="text"></span>
+                                        <a href="javascript:EliminarProducto(${producto.id_producto})">
+                                            <button type="button" class="btn btn-danger">Eliminar</button>
                                         </a>
                                     </span>
                                 </td>
@@ -126,5 +117,11 @@
         // Cargar los productos inicialmente
         fetchProductos();
     </script>
+    <footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>
 </body>
 </html>

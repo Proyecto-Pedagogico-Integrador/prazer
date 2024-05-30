@@ -22,6 +22,21 @@ router.post("/validarNombre", async (req, res) => {
   }
 });
 
+router.post("/validarCodigo", async (req, res) => {
+  try {
+    const { codigo } = req.body;
+    const validarCodigo = await pool.query(
+      `SELECT id_producto FROM producto WHERE id_producto = ?`,
+      [codigo]
+    );
+
+    res.json({ existe: validarCodigo.length > 0 });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
 router.post("/add", isLoggedIn, async (req, res) => {
   try {
     const { nombre, precio, peso, cantidad } = req.body;

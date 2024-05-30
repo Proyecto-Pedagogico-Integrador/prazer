@@ -67,6 +67,8 @@ app.use('/inicio', require('./routes/index'));
 app.use('/reporte', require('./routes/reporte'));
 app.use('/bienvenida', require('./routes/bienvenida'));
 app.use('/factura', require('./routes/factura'));
+app.use('/escogerReporte', require('./routes/choose'));
+
 
 // Public
 app.use(express.static(path.join(__dirname, 'public')));

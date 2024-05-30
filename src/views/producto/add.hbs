@@ -39,10 +39,10 @@
                     <form id="productoForm" action="/producto/add" method="POST">
                         <div class="form-group">
                             <h6 style="text-align: left;">Código de barras*</h6>
-                            <span id="nombreMensaje"></span>
-                            <input type="text" name="nombre" id="nombre" class="form-control" maxlength="45"
-                                autofocus required>
+                            <span id="codigoMensaje"></span>
+                            <input type="text" name="codigo" id="codigo" class="form-control" oninput="limitarLongitud(this, 13)" required>
                         </div>
+
                         <div class="form-group">
                             <h6 style="text-align: left;">Nombre*</h6>
                             <span id="nombreMensaje"></span>
@@ -51,18 +51,15 @@
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Precio*</h6>
-                            <input type="number" name="precio" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
+                            <input type="text" name="precio" class="form-control" oninput="limitarLongitud(this, 10)" required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Peso gr*</h6>
-                            <input type="number" name="peso" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="7" required>
+                            <input type="number" name="peso" class="form-control" oninput="limitarLongitud(this, 4)" required>
                         </div>
                         <div class="form-group">
                             <h6 style="text-align: left;">Cantidad*</h6>
-                            <input type="number" name="cantidad" class="form-control" min="1"
-                           onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57)" maxlength="11" required>
+                            <input type="number" name="cantidad" class="form-control" oninput="limitarLongitud(this, 4)"required>
                         </div>
                         <div class="form-group">
                             <button id="guardarBtn" class="btn btn-success btn-block" disabled>
@@ -77,6 +74,11 @@
 </div>
 
 <script>
+    function limitarLongitud(elemento, maximoCaracteres) {
+    if (elemento.value.length > maximoCaracteres) {
+        elemento.value = elemento.value.slice(0, maximoCaracteres);
+    }
+}
     async function validarNombre() {
         const nombre = document.getElementById('nombre').value;
 
@@ -110,6 +112,40 @@
         habilitarODeshabilitarBotonGuardar();
     }
 
+    async function validarCodigo() {
+    const codigo = document.getElementById('codigo').value;
+
+    // Si el campo está vacío, no se muestra ningún mensaje
+    if (!codigo.trim()) {
+        document.getElementById('codigoMensaje').innerText = '';
+        return;
+    }
+
+    // Realiza una solicitud AJAX al servidor para verificar el código de barras
+    const response = await fetch('/producto/validarCodigo', { // Cambiar la URL aquí
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ codigo })
+    });
+
+    const data = await response.json();
+    // Realizar ajuste de los mensajes
+    // Muestra el mensaje de validación junto al campo de código
+    const codigoMensaje = document.getElementById('codigoMensaje');
+    if (data.existe) {
+        codigoMensaje.innerText = 'Código no disponible';
+        codigoMensaje.style.color = 'red';
+    } else {
+        codigoMensaje.innerText = 'Codigo disponible';
+        codigoMensaje.style.color = 'green';
+    }
+
+    habilitarODeshabilitarBotonGuardar();
+}
+
+
     // Tener en cuenta que si el mensaje que se cambie, en estos momentos el vas bien, se debe actualizar en todas partes como en la linea 94,125,132 y 133
     function habilitarODeshabilitarBotonGuardar() {
         const nombreValido = document.getElementById('nombreMensaje').innerText === 'Nombre disponible';
@@ -120,5 +156,12 @@
     window.onload = function () {
         // Agrega eventos de input a los campos de nombre y NIT
         document.getElementById('nombre').addEventListener('input', validarNombre);
+        document.getElementById('codigo').addEventListener('input', validarCodigo);
     };
 </script>
+<footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>

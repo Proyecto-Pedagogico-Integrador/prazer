@@ -40,8 +40,8 @@
                     <form action="/producto/edit/{{producto.id_producto}}" method="POST">
                         <div class="form-group">
                             <h6 style="text-align: left;">Código de barras*</h6>
-                            <input type="text" name="nombre" class="form-control" autofocus
-                                value="{{producto.nombre}}" 
+                            <input type="text" name="codigo" class="form-control" autofocus
+                                value="{{producto.id_producto}}" 
                                 onkeypress="return (event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || event.keyCode === 32" maxlength="45" required>
                         </div>
                         <div class="form-group">
@@ -79,5 +79,11 @@
         </div>
     </div>
 </div>
+<footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>
 </body>
 </html>

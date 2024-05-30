@@ -7,54 +7,77 @@
     <link rel="stylesheet" href="/img/styles/reporte.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <style>
+        #tablaFacturas {
+            display: none;
+        }
+        .container2 h3 {
+            display: inline-block;
+            margin-left: 40%;
+            margin-top: 0.5%; /* Reduce the top margin */
+        }
+        .container2 .container {
+            margin-top: 1.5rem; /* Reduce the bottom margin */
+        }
+    </style>
 </head>
 <body>
-    <div class="container p-4">
-        <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-            <h3 style="display: inline-block; margin-left: 40%; margin-top:2%">Reporte de ventas</h3>
-            <div class="container mt-5">
-                <form id="formBuscar">
-                    <label for="fecha">Selecciona un rango de fechas:</label>
-                    <br>
-                    <label>Fecha inicial</label>
-                    <label style="margin-left: 4%;">Fecha final</label>
-                    <br>
-                    <input type="date" id="fechaInicio" name="fechaInicio" max="">
-                    <input type="date" id="fechaFin" name="fechaFin" max="">
-                    <button style="background-color: darkcyan; padding: 1%; color: white" id="guardarBtn" disabled>Guardar</button>
-                </form>
-                <br>
-                <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
-                    <thead style="background-color: darkcyan; color: white">
-                        <tr class="text-center">
-                            <th>ID FACTURA</th>
-                            <th>CLIENTE</th>
-                            <th>FECHA</th>
-                            <th>IVA</th>
-                            <th>TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody id="facturaBody">
-                        <!-- Facturas will be injected here by JavaScript -->
-                    </tbody>
-                    <tfoot>
-                        <tr class="text-center">
-                            <td colspan="4" style="text-align: right;">
-                                <h5>Total</h5>
-                            </td>
-                            <td id="footerTotal">
-                                <h5 id="sumaTotal"></h5>
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div id="noFacturasMessage" class="col-md-4 mx-auto" style="display: none;">
-                    <div class="card card-body text-center">
-                        <p>No hay facturas registradas en este rango de fechas</p>
+    <div class="wrapper">
+        <div class="content">
+            <div class="container p-4">
+                <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
+                    <h3>Reporte de ventas</h3>
+                    <div class="container mt-3">
+                        <form id="formBuscar">
+                            <label for="fecha">Selecciona un rango de fechas:</label>
+                            <br>
+                            <label>Fecha inicial</label>
+                            <label style="margin-left: 4%;">Fecha final</label>
+                            <br>
+                            <input type="date" id="fechaInicio" name="fechaInicio" max="">
+                            <input type="date" id="fechaFin" name="fechaFin" max="">
+                            <button style="background-color: darkcyan; padding: 1%; color: white" id="guardarBtn" disabled>Guardar</button>
+                        </form>
+                        <br>
+                        <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
+                            <thead style="background-color: darkcyan; color: white">
+                                <tr class="text-center">
+                                    <th>ID FACTURA</th>
+                                    <th>CLIENTE</th>
+                                    <th>FECHA</th>
+                                    <th>IVA</th>
+                                    <th>TOTAL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="facturaBody">
+                                <!-- Facturas will be injected here by JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="text-center">
+                                    <td colspan="4" style="text-align: right;">
+                                        <h5>Total</h5>
+                                    </td>
+                                    <td id="footerTotal">
+                                        <h5 id="sumaTotal"></h5>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div id="noFacturasMessage" class="col-md-4 mx-auto" style="display: none;">
+                            <div class="card card-body text-center">
+                                <p>No hay facturas registradas en este rango de fechas</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <footer>
+            <h5>Teléfono</h5>
+            <h6>312-695-0222</h6>
+            <h5>Dirección</h5>
+            <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+        </footer>
     </div>
 
     <script>
@@ -65,6 +88,7 @@
             const facturaBody = document.getElementById('facturaBody');
             const noFacturasMessage = document.getElementById('noFacturasMessage');
             const sumaTotalElement = document.getElementById('sumaTotal');
+            const tablaFacturas = document.getElementById('tablaFacturas');
 
             const now = new Date();
             const fechaActual = now.toISOString().split('T')[0]; // Only take the date part (YYYY-MM-DD)
@@ -121,10 +145,12 @@
                         noFacturasMessage.style.display = 'none';
                         renderFacturas(facturas);
                         updateTotal();
+                        tablaFacturas.style.display = 'table';
                     } else {
                         noFacturasMessage.style.display = 'block';
                         facturaBody.innerHTML = '';
                         sumaTotalElement.textContent = '0';
+                        tablaFacturas.style.display = 'none';
                     }
                 } catch (error) {
                     console.error('Error fetching facturas:', error);

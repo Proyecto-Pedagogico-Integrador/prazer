@@ -47,8 +47,8 @@
                         <form action="/cliente/edit/{{cliente.id_cliente}}" method="POST">
                             <div class="form-group">
                                 <h6 style="text-align: left;">NIT*</h6>
-                                <input type="text" name="nit" class="form-control" placeholder="nit"
-                                    value="{{cliente.nit}}"
+                                <input type="text" name="id_cliente" class="form-control" placeholder="nit"
+                                    value="{{cliente.id_cliente}}"
                                     onkeypress="return (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode == 45)"
                                     minlength="8" maxlength="11" required>
                             </div>
@@ -81,6 +81,12 @@
             </div>
         </div>
     </div>
+    <footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>
 </body>
 
 </html>
