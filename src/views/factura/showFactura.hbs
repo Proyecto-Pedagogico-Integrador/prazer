@@ -8,19 +8,33 @@
   <link rel="stylesheet" href="/img/styles/resumen.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+  <style>
+    .header-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .printbutton {
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
   <div class="container p-4">
     <div class="container2 mt-4 p-3 mb-4 bg-body rounded">
-      <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
-        <a class="btn btn-outline-success" href="/factura">
-          <span class="icon text-dark-50">
-            <i class="fas fa-arrow-left"></i>
-          </span>
-          <span class="text"></span>
-        </a>
-      </span>
+      <div class="header-buttons">
+        <span class="text" tabindex="0" data-placement="top" title="Volver" style="display: inline-block">
+          <a class="btn btn-outline-success" href="/factura">
+            <span class="icon text-dark-50">
+              <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text"></span>
+          </a>
+        </span>
+        <i type="button" class="printbutton fas fa-2x fa-print"></i>
+      </div>
       <div class="table-container">
         <table class="resumen-table">
           <tbody>
@@ -85,16 +99,21 @@
           </tbody>
         </table>
       </div>
-      <i type="button" class="printbutton fas fa-2x fa-print"></i>
     </div>
   </div>
-</body>
-<script>
-  document.querySelectorAll('.printbutton').forEach(function (element) {
-    element.addEventListener('click', function () {
-      print();
+  <footer>
+    <h5>Teléfono</h5>
+    <h6>312-695-0222</h6>
+    <h5>Dirección</h5>
+    <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+  </footer>
+  <script>
+    document.querySelectorAll('.printbutton').forEach(function (element) {
+      element.addEventListener('click', function () {
+        print();
+      });
     });
-  });
-</script>
+  </script>
+</body>
 
 </html>
