@@ -6,52 +6,39 @@ const { isLoggedIn } = require("../lib/auth");
 
 router.get("/", async (req, res) => {
   try {
-    const cantidadMaxima = await pool.query(
-      `SELECT 
-        nombre, 
-        cantidad as atributo,
-        'cantidad maxima' as tipo 
-      FROM producto 
-      order by cantidad desc 
-      limit 1`
-    );
+    res.render("reporte/listReporte");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error interno del servidor");
+  }
+});
 
-    const cantidadMinima = await pool.query(
+router.get("/listReporteProducto", async (req, res) => {
+  try {
+    const stock = await pool.query(
       `SELECT 
-        nombre, 
-        cantidad as atributo, 
-        'cantidad minima' as tipo 
+        nombre,
+        cantidad
       FROM producto 
-      order by cantidad asc 
-      limit 1`
-    );
-
-    const precioMayor = await pool.query(
-      `SELECT 
-        nombre, 
-        precio as atributo, 
-        'precio mas alto' as tipo 
-      FROM producto 
-      order by precio desc 
-      limit 1`
-    );
-
-    const precioMenor = await pool.query(
-      `SELECT 
-        nombre, 
-        precio as atributo,
-        'precio mas bajo' as tipo 
-      FROM producto 
-      order by precio asc 
-      limit 1
+      WHERE cantidad <= 5
       `
     );
+    const mas_vendidos = await pool.query(
+      `SELECT  
+        nombre_producto as nombre,
+        SUM(cantidad) AS cantidad
+      FROM 
+          detalle_factura
+      GROUP BY 
+          nombre_producto
+        ORDER BY 
+        cantidad DESC
+        LIMIT 5`
+    );
 
-    res.render("reporte/listReporte", {
-      cantidadMaxima,
-      cantidadMinima,
-      precioMayor,
-      precioMenor,
+    res.render("reporte/listReporteProducto", {
+      stock,
+      mas_vendidos
     });
   } catch (error) {
     console.error(error);

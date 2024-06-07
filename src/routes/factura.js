@@ -269,13 +269,15 @@ router.get("/showFactura/:id_factura", async (req, res) => {
     );
 
     const total_iva = total[0].total + total[0].total * 0.19;
+    const iva = total[0].total * 0.19;
     console.log(productosList);
     console.log(total);
     res.render(`factura/showFactura`, {
       cliente,
       productosList,
       total,
-      total_iva
+      total_iva,
+      iva
     });
   } catch (error) {
     // Maneja el error aquí
