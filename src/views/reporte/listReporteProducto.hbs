@@ -47,6 +47,7 @@
 <body>
     <div class="container welcome-container">
         <h3 class="welcome-title">Reportes de Productos</h3>
+        <i type="button" class="printbutton fas fa-2x fa-print"></i>
         <div class="row">
             <div class="col-md-6">
                 <div class="card" style="width: 100%;">
@@ -106,7 +107,18 @@
         <h6>312-695-0222</h6>
         <h5>Dirección</h5>
         <h6>Calle 82 #50A - 48. Santa María, Itagüí</h6>
+        <h5>Soporte</h5>
+    <h6>312-600-6877</h6>
+    <h6>350-468-9979</h6>
+    <h6>311-651-5496</h6>
     </footer>
 </body>
 
 </html>
+<script>
+    document.querySelectorAll('.printbutton').forEach(function (element) {
+      element.addEventListener('click', function () {
+        print();
+      });
+    });
+  </script>

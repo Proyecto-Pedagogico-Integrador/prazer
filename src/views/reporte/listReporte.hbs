@@ -37,6 +37,7 @@
                             <input type="date" id="fechaInicio" name="fechaInicio" max="">
                             <input type="date" id="fechaFin" name="fechaFin" max="">
                             <button style="background-color: darkcyan; padding: 1%; color: white" id="guardarBtn" disabled>Guardar</button>
+                            <i type="button" class="printbutton fas fa-2x fa-print"></i>
                         </form>
                         <br>
                         <table id="tablaFacturas" class="table mt-2 table-bordered table-striped">
@@ -198,6 +199,11 @@
                 sumaTotalElement.textContent = sumaTotal.toFixed(2);
             }
         });
+    document.querySelectorAll('.printbutton').forEach(function (element) {
+      element.addEventListener('click', function () {
+        print();
+      });
+    });
     </script>
 </body>
 </html>
