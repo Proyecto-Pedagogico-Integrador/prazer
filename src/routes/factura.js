@@ -35,14 +35,8 @@ router.get("/", isLoggedIn, async (req, res) => {
   FROM detalle_factura a
   INNER JOIN totales b 
       ON a.llave = b.id_factura
-  GROUP BY 
-      a.nombre_cliente,
-      a.nit,
-      a.fecha_factura,
-      a.empleado,
-      a.llave,
-      b.iva,
-      b.total;
+  ORDER BY a.fecha_factura DESC    
+      ;
   `
   );
   res.render("factura/listFactura", { factura });
